@@ -1,0 +1,62 @@
+{
+  "_aviso": "Base referencial elaborada por EVI.IA. Plazos y montos son estimaciones orientativas; verificar siempre con SUNARP, la municipalidad distrital y un abogado/notario antes de comprar.",
+  "tramites_generales": [
+    {"tramite": "Copia literal de partida", "entidad": "SUNARP", "dias_min": 0, "dias_max": 1, "obligatorio": true,
+     "para_que": "Ver titular, área inscrita, cargas y gravámenes."},
+    {"tramite": "Certificado Registral Inmobiliario (CRI)", "entidad": "SUNARP", "dias_min": 3, "dias_max": 7, "obligatorio": true,
+     "para_que": "Acreditar la situación jurídica del inmueble a la fecha (exigido por notarías y bancos)."},
+    {"tramite": "Constancia de no adeudo de predial y arbitrios", "entidad": "Municipalidad", "dias_min": 1, "dias_max": 5, "obligatorio": true,
+     "para_que": "Evitar heredar deudas tributarias municipales del vendedor."},
+    {"tramite": "Certificado de parámetros urbanísticos y edificatorios", "entidad": "Municipalidad", "dias_min": 5, "dias_max": 10, "obligatorio": false,
+     "para_que": "Saber qué se puede construir, usos permitidos y alturas (clave si se piensa remodelar o cambiar de uso)."},
+    {"tramite": "Minuta y escritura pública de compraventa", "entidad": "Notaría", "dias_min": 3, "dias_max": 10, "obligatorio": true,
+     "para_que": "Formalizar la compraventa."},
+    {"tramite": "Pago de impuesto de alcabala", "entidad": "Municipalidad / SAT", "dias_min": 1, "dias_max": 3, "obligatorio": true,
+     "para_que": "3 % sobre el valor que exceda 10 UIT; requisito para inscribir."},
+    {"tramite": "Inscripción de la compraventa", "entidad": "SUNARP", "dias_min": 7, "dias_max": 15, "obligatorio": true,
+     "para_que": "Hacer oponible la propiedad frente a terceros."}
+  ],
+  "tramites_saneamiento": {
+    "fabrica_no_declarada": {"tramite": "Regularización de declaratoria de fábrica / conformidad de obra", "entidad": "Municipalidad + SUNARP", "dias_min": 60, "dias_max": 180},
+    "sin_independizar": {"tramite": "Independización y reglamento interno", "entidad": "Municipalidad + SUNARP", "dias_min": 45, "dias_max": 120},
+    "cargas_gravamenes": {"tramite": "Levantamiento de hipoteca / embargo", "entidad": "Banco o juzgado + SUNARP", "dias_min": 15, "dias_max": 90},
+    "deuda_arbitrios": {"tramite": "Fraccionamiento o pago de deuda municipal", "entidad": "Municipalidad", "dias_min": 1, "dias_max": 15},
+    "sucesion": {"tramite": "Sucesión intestada / inscripción de testamento", "entidad": "Notaría + SUNARP", "dias_min": 30, "dias_max": 90},
+    "cambio_uso": {"tramite": "Licencia de funcionamiento / cambio de uso", "entidad": "Municipalidad", "dias_min": 15, "dias_max": 60}
+  },
+  "distritos": {
+    "Lince": {
+      "municipalidad": "Municipalidad Distrital de Lince",
+      "arbitrios_predial_anual_usd": [180, 350],
+      "nivel_riesgo_base": "Medio",
+      "riesgos": [
+        "Parque inmobiliario antiguo: frecuentes ampliaciones o pisos adicionales sin licencia ni fábrica declarada.",
+        "Casas convertidas en departamentos sin independización inscrita.",
+        "Aires / azoteas vendidos sin reglamento interno actualizado."
+      ],
+      "recomendacion": "Comparar el área inscrita en SUNARP con el área real; si difieren, presupuestar regularización antes de ofertar."
+    },
+    "Jesús María": {
+      "municipalidad": "Municipalidad Distrital de Jesús María",
+      "arbitrios_predial_anual_usd": [220, 420],
+      "nivel_riesgo_base": "Medio",
+      "riesgos": [
+        "Quintas y casonas con varias unidades: verificar independización y régimen de propiedad común.",
+        "Edificios de los años 60–80 con juntas de propietarios inactivas y reglamento interno desactualizado.",
+        "Inmuebles heredados con sucesión no inscrita."
+      ],
+      "recomendacion": "Pedir el reglamento interno y la copia literal de la partida matriz además de la de la unidad."
+    },
+    "San Isidro": {
+      "municipalidad": "Municipalidad Distrital de San Isidro",
+      "arbitrios_predial_anual_usd": [450, 950],
+      "nivel_riesgo_base": "Bajo",
+      "riesgos": [
+        "Parámetros urbanísticos estrictos (alturas, retiros, estacionamientos): limitan remodelaciones y cambios de uso.",
+        "Zonas residenciales con restricciones para uso comercial u oficinas.",
+        "Arbitrios más altos que el promedio: impactan el NOI."
+      ],
+      "recomendacion": "Si el plan incluye remodelar o alquilar como oficina, tramitar primero el certificado de parámetros urbanísticos."
+    }
+  }
+}

@@ -1,0 +1,30 @@
+# Secretos — NUNCA subir el .env real
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Editores / SO
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Datos grandes o personales (mantener solo muestras chicas)
+data/*.parquet
+data/raw/
+
+# Documentos del curso (no publicar en el repo)
+Proyecto_Final_Startup_UP_2026-II.md
+Proyecto_Final_Startup_UP_2026-II.pdf
+PREGUNTAS_GUION.docx
