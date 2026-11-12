@@ -295,17 +295,107 @@ def cargar_legal() -> dict:
     return json.loads(LEGAL_JSON.read_text(encoding="utf-8"))
 
 
-SITUACIONES = {
-    "fabrica_no_declarada": "El área real/construida no coincide con la inscrita en SUNARP",
-    "sin_independizar": "La unidad no está independizada (comparte partida)",
-    "cargas_gravamenes": "La partida tiene hipoteca, embargo u otra carga",
-    "deuda_arbitrios": "El vendedor tiene deuda de predial o arbitrios",
-    "sucesion": "El vendedor heredó el inmueble y la sucesión no está inscrita",
-    "cambio_uso": "Quiero usarlo como oficina/comercio (no vivienda)",
-}
-PESO_RIESGO = {"fabrica_no_declarada": 30, "sin_independizar": 30, "cargas_gravamenes": 25,
-               "deuda_arbitrios": 10, "sucesion": 20, "cambio_uso": 15}
-BASE_RIESGO = {"Bajo": 5, "Medio": 15, "Alto": 25}
+ENTIDADES = ["Notaría", "SUNARP", "Municipalidad"]
+OPCIONES_INDEP = ["Independizada (partida propia)", "En trámite", "No independizada (partida matriz)", "No sé"]
+TRIESTADO = ["No", "Sí", "No sé"]
+
+
+def diagnosticar(d: dict, distrito: str, base: dict) -> tuple[int, pd.DataFrame, list[str]]:
+    """Score de Riesgo Burocrático (0-100) a partir de los parámetros del inmueble.
+
+    d: antiguedad, independizacion, uso_inscrito, uso_previsto, pisos_construidos,
+       pisos_declarados, cargas_gravamenes, deuda_arbitrios, sucesion.
+    Devuelve (score, desglose por factor, condiciones que disparan trámites).
+    """
+    w, info = base["pesos_riesgo"], base["distritos"][distrito]
+    factores: list[tuple[str, int, str]] = []
+    condiciones: list[str] = []
+
+    factores.append(("Distrito", info["riesgo_base_puntos"], f"Riesgo base {info['nivel_riesgo_base']}"))
+
+    pts_ant = next(p for tope, p in w["antiguedad"] if d["antiguedad"] < tope)
+    factores.append(("Antigüedad", pts_ant, f"{d['antiguedad']} años"))
+
+    factores.append(("Independización SUNARP", w["independizacion"][d["independizacion"]], d["independizacion"]))
+    if d["independizacion"] == "No independizada (partida matriz)":
+        condiciones.append("sin_independizar")
+    elif d["independizacion"] == "En trámite":
+        condiciones.append("independizacion_en_tramite")
+
+    extra_pisos = max(0, d["pisos_construidos"] - d["pisos_declarados"])
+    pts_pisos = 0
+    if extra_pisos:
+        pts_pisos = min(w["pisos_no_declarados_max"],
+                        w["pisos_no_declarados_base"] + w["pisos_no_declarados_por_piso"] * (extra_pisos - 1))
+        condiciones.append("fabrica_no_declarada")
+    factores.append(("Pisos no declarados", pts_pisos,
+                     f"{d['pisos_construidos']} construidos vs {d['pisos_declarados']} en SUNARP"))
+
+    clave_uso = f"{d['uso_inscrito']}→{d['uso_previsto']}"
+    pts_uso = w["uso"][clave_uso]
+    if d["uso_previsto"] == "Comercial":
+        pts_uso += info["recargo_uso_comercial"]
+        condiciones.append("uso_comercial")
+    if d["uso_inscrito"] != d["uso_previsto"]:
+        condiciones.append("cambio_uso")
+    factores.append(("Uso inscrito → previsto", pts_uso, clave_uso))
+
+    etiquetas = {"cargas_gravamenes": "Cargas / gravámenes", "deuda_arbitrios": "Deuda municipal",
+                 "sucesion": "Sucesión no inscrita"}
+    for clave, etiqueta in etiquetas.items():
+        factores.append((etiqueta, w["triestado"][clave][d[clave]], d[clave]))
+        if d[clave] == "Sí":
+            condiciones.append(clave)
+
+    desglose = pd.DataFrame(factores, columns=["Factor", "Puntos", "Detalle"])
+    score = int(min(100, desglose["Puntos"].sum()))
+    return score, desglose, condiciones
+
+
+def ruta_critica(condiciones: list[str], base: dict, escenario: str = "dias_max") -> pd.DataFrame:
+    """Cronograma de trámites con inicio/fin por fase.
+
+    Fase 1: las entidades avanzan en paralelo (cada entidad encadena sus trámites);
+    la fase dura lo que tarde la entidad más lenta. Fases 2-4: secuenciales.
+    Fase 5 (post-compra) no forma parte de la ruta crítica hasta la inscripción.
+    """
+    tramites = list(base["tramites_generales"])
+    # Orden lógico del saneamiento: titulares correctos → fábrica → independización → uso → cargas → deudas
+    orden = ["sucesion", "fabrica_no_declarada", "sin_independizar", "independizacion_en_tramite",
+             "cambio_uso", "uso_comercial", "cargas_gravamenes", "deuda_arbitrios"]
+    for c in sorted(condiciones, key=lambda x: orden.index(x) if x in orden else len(orden)):
+        tramites += base["tramites_condicionales"].get(c, [])
+
+    filas, t0 = [], 0
+    for fase in sorted(base["_fases"]):
+        de_fase = [t for t in tramites if t["fase"] == fase]
+        if not de_fase:
+            continue
+        paralelo = fase == "1_due_diligence"
+        fin_fase = t0
+        cursor = {e: t0 for e in ENTIDADES}
+        for t in de_fase:
+            inicio = cursor[t["entidad"]] if paralelo else fin_fase
+            fin = inicio + t[escenario]
+            if paralelo:
+                cursor[t["entidad"]] = fin
+            filas.append({**t, "inicio": inicio, "fin": fin, "fase_nombre": base["_fases"][fase]})
+            fin_fase = max(fin_fase, fin)
+        if fase != "5_post_compra":
+            t0 = fin_fase
+
+    df = pd.DataFrame(filas)
+    df["duracion"] = df["fin"] - df["inicio"]
+    # En la fase paralela solo es crítica la cadena de la entidad que termina última.
+    fase1 = df["fase"] == "1_due_diligence"
+    if fase1.any():
+        fin1 = df.loc[fase1, "fin"].max()
+        ent_critica = df.loc[fase1 & (df["fin"] == fin1), "entidad"].iloc[0]
+        df["critico"] = ~fase1 | (df["entidad"] == ent_critica)
+    else:
+        df["critico"] = True
+    df.loc[df["fase"] == "5_post_compra", "critico"] = False
+    return df
 
 
 # ---------------------------------------------------------------------------
@@ -313,6 +403,16 @@ BASE_RIESGO = {"Bajo": 5, "Medio": 15, "Alto": 25}
 # ---------------------------------------------------------------------------
 def fmt_usd(x: float) -> str:
     return f"US$ {x:,.0f}"
+
+
+def fmt_pen(x: float) -> str:
+    return f"S/ {x:,.0f}"
+
+
+def metrica_dual(col, etiqueta: str, usd: float, tc: float, help: str | None = None) -> None:
+    """Métrica en USD con su equivalente en soles debajo."""
+    col.metric(etiqueta, fmt_usd(usd), help=help)
+    col.caption(f"≈ **{fmt_pen(usd * tc)}**")
 
 
 def sidebar(ref: pd.DataFrame) -> dict:
@@ -401,22 +501,45 @@ def tab_mercado(mercado: pd.DataFrame, estados: dict, ref: pd.DataFrame, p: dict
 
 
 def tab_rentabilidad(p: dict, ref: pd.DataFrame) -> dict:
-    st.subheader("💰 Rentabilidad financiera")
+    st.subheader("💰 Rentabilidad financiera — retorno del inversionista comprador")
+    tc = p["tipo_cambio"]
     k, flujo = calcular_rentabilidad(p)
 
-    c1, c2, c3, c4 = st.columns(4)
-    c1.metric("Inversión total", fmt_usd(k["inversion_total"]),
-              help=f"Precio + alcabala ({fmt_usd(k['alcabala'])}) + gastos de cierre "
-                   f"({fmt_usd(k['gastos_cierre'])}) + remodelación")
-    bench = ref.loc[p["distrito"], "rentab_bruta_pct"]
-    c2.metric("Cap Rate", f"{k['cap_rate']:.2f} %", help="NOI año 1 / precio de compra")
-    c3.metric("TIR 5 años", "n/d" if k["tir"] is None else f"{k['tir'] * 100:.2f} %")
-    c4.metric(f"VAN @ {p['tasa_descuento_pct']:.1f}%", fmt_usd(k["van"]))
+    st.info(
+        "📌 **¿De quién es este retorno?** Todas las métricas de esta pestaña (Cap Rate, TIR, VAN, "
+        "Payback, NOI y flujo de caja) miden el retorno del **INVERSIONISTA COMPRADOR** bajo un "
+        "**modelo de alquiler + apreciación a 5 años**: compra el inmueble al contado (año 0), lo "
+        "alquila durante 5 años y lo vende al final del año 5. **No** es la ganancia del vendedor, "
+        "del corredor ni de una inmobiliaria desarrolladora, y no incluye hipoteca."
+    )
+    st.caption(f"Montos en USD con su equivalente en soles al tipo de cambio de la barra lateral: "
+               f"**S/ {tc:.2f} por US$ 1**.")
 
-    c5, c6, c7 = st.columns(3)
-    c5.metric("NOI año 1", fmt_usd(k["noi_1"]))
-    c6.metric("Cash-on-cash año 1", f"{k['cash_on_cash']:.2f} %")
-    c7.metric("Payback", f"Año {k['payback']}" if k["payback"] else "> 5 años")
+    st.markdown("##### Inversión del comprador (año 0)")
+    c1, c2, c3, c4 = st.columns(4)
+    metrica_dual(c1, "Precio de compra", p["precio_usd"], tc)
+    metrica_dual(c2, "Alcabala", k["alcabala"], tc, help="3 % sobre el valor que exceda 10 UIT")
+    metrica_dual(c3, "Gastos de cierre + remodelación", k["gastos_cierre"] + p["remodelacion_usd"], tc,
+                 help="Notaría, registros y remodelación/amoblado")
+    metrica_dual(c4, "Precio total (inversión total)", k["inversion_total"], tc,
+                 help="Precio + alcabala + gastos de cierre + remodelación")
+
+    st.markdown("##### Retorno del comprador por alquiler y apreciación (horizonte 5 años)")
+    bench = ref.loc[p["distrito"], "rentab_bruta_pct"]
+    c5, c6, c7, c8 = st.columns(4)
+    c5.metric("Cap Rate (comprador)", f"{k['cap_rate']:.2f} %",
+              help="NOI del año 1 por alquiler / precio de compra. No incluye apreciación.")
+    c6.metric("TIR 5 años (comprador)", "n/d" if k["tir"] is None else f"{k['tir'] * 100:.2f} %",
+              help="Tasa que iguala a cero los flujos del comprador: inversión, 5 años de alquiler y venta al año 5.")
+    metrica_dual(c7, f"VAN @ {p['tasa_descuento_pct']:.1f}% (comprador)", k["van"], tc,
+                 help="Valor presente de los flujos del comprador descontados a su costo de oportunidad.")
+    c8.metric("Payback (comprador)", f"Año {k['payback']}" if k["payback"] else "> 5 años",
+              help="Año en que el flujo acumulado del comprador se vuelve positivo (incluye la venta al año 5).")
+
+    c9, c10, _, _ = st.columns(4)
+    metrica_dual(c9, "NOI año 1", k["noi_1"], tc, help="Ingreso por alquiler − vacancia − gastos operativos")
+    c10.metric("Cash-on-cash año 1", f"{k['cash_on_cash']:.2f} %",
+               help="Flujo del año 1 después de impuestos / inversión total")
 
     # Veredicto
     tir_ok = k["tir"] is not None and k["tir"] * 100 >= p["tasa_descuento_pct"]
@@ -428,16 +551,23 @@ def tab_rentabilidad(p: dict, ref: pd.DataFrame) -> dict:
         st.error("❌ **No viable** con estos supuestos: la TIR no cubre tu costo de oportunidad.")
     st.caption(f"Referencia: rentabilidad bruta mediana de {p['distrito']} ≈ {bench:.1f} %.")
 
+    st.markdown("##### Flujo de caja del inversionista comprador a 5 años")
+    moneda = st.radio("Moneda del gráfico", ["USD", "PEN"], horizontal=True, key="moneda_flujo")
+    factor, simbolo = (1.0, "USD") if moneda == "USD" else (tc, "PEN (S/)")
     fig = go.Figure()
-    fig.add_bar(x=flujo["Año"], y=flujo["Flujo de caja"], name="Flujo de caja",
+    fig.add_bar(x=flujo["Año"], y=flujo["Flujo de caja"] * factor, name="Flujo de caja",
                 marker_color=["#c0392b" if v < 0 else "#2e86c1" for v in flujo["Flujo de caja"]])
-    fig.add_scatter(x=flujo["Año"], y=flujo["Acumulado"], name="Acumulado", mode="lines+markers")
-    fig.update_layout(height=400, xaxis_title="Año", yaxis_title="USD", legend=dict(orientation="h"))
+    fig.add_scatter(x=flujo["Año"], y=flujo["Acumulado"] * factor, name="Acumulado", mode="lines+markers")
+    fig.update_layout(height=400, xaxis_title="Año", yaxis_title=simbolo, legend=dict(orientation="h"))
     st.plotly_chart(fig)
 
-    st.dataframe(flujo.set_index("Año").style.format("{:,.0f}"))
-    st.caption("El año 5 incluye la venta del inmueble (apreciación − comisión − 5 % de impuesto a la "
-               "ganancia de capital si aplica). No incluye financiamiento hipotecario.")
+    tabla = flujo.set_index("Año")
+    tabla.columns = [f"{c} (USD)" for c in tabla.columns]
+    tabla["Flujo de caja (PEN)"] = flujo.set_index("Año")["Flujo de caja"] * tc
+    tabla["Acumulado (PEN)"] = flujo.set_index("Año")["Acumulado"] * tc
+    st.dataframe(tabla.style.format("{:,.0f}"))
+    st.caption("Año 0 = inversión total del comprador. El año 5 incluye la venta del inmueble (apreciación − "
+               "comisión − 5 % de impuesto a la ganancia de capital si aplica). No incluye financiamiento hipotecario.")
     return k
 
 
@@ -451,28 +581,108 @@ def tab_legal(p: dict) -> None:
         st.markdown(f"- ⚠️ {r}")
     st.info(f"💡 {info['recomendacion']}")
 
-    st.markdown("#### ¿Qué sabes del inmueble?")
-    marcadas = [clave for clave, texto in SITUACIONES.items() if st.checkbox(texto, key=f"sit_{clave}")]
+    # --- Formulario de diagnóstico -------------------------------------------------
+    st.markdown("#### 🩺 Diagnóstico de parámetros del inmueble")
+    with st.form("diagnostico_legal"):
+        f1, f2, f3 = st.columns(3)
+        antiguedad = f1.number_input("Antigüedad de la edificación (años)", 0, 120, 15, 1)
+        indep = f2.selectbox("Independización en SUNARP", OPCIONES_INDEP,
+                             help="¿La unidad tiene partida registral propia? Revísalo en la copia literal.")
+        pisos_c = f3.number_input("Pisos construidos (edificio/casa)", 1, 60, 5, 1)
 
-    score = min(100, BASE_RIESGO[info["nivel_riesgo_base"]] + sum(PESO_RIESGO[m] for m in marcadas))
+        f4, f5, f6 = st.columns(3)
+        uso_ins = f4.selectbox("Uso inscrito / según licencia", ["Residencial", "Comercial"])
+        uso_prev = f5.selectbox("Uso previsto por el comprador", ["Residencial", "Comercial"],
+                                help="Comercial = alquilar como oficina, consultorio o local.")
+        pisos_d = f6.number_input("Pisos declarados en SUNARP (fábrica)", 1, 60, 5, 1,
+                                  help="Si hay más pisos construidos que declarados, hay fábrica no declarada.")
+
+        f7, f8, f9 = st.columns(3)
+        cargas = f7.selectbox("¿Hipoteca, embargo u otra carga?", TRIESTADO)
+        deuda = f8.selectbox("¿Deuda de predial o arbitrios?", TRIESTADO)
+        sucesion = f9.selectbox("¿Vendedor heredó sin sucesión inscrita?", TRIESTADO)
+
+        escenario = st.radio("Escenario de plazos", ["Conservador (días máx.)", "Optimista (días mín.)"],
+                             horizontal=True)
+        st.form_submit_button("🔍 Diagnosticar", type="primary")
+
+    datos = {"antiguedad": int(antiguedad), "independizacion": indep, "uso_inscrito": uso_ins,
+             "uso_previsto": uso_prev, "pisos_construidos": int(pisos_c), "pisos_declarados": int(pisos_d),
+             "cargas_gravamenes": cargas, "deuda_arbitrios": deuda, "sucesion": sucesion}
+    score, desglose, condiciones = diagnosticar(datos, p["distrito"], base)
+    col_dias = "dias_max" if escenario.startswith("Conservador") else "dias_min"
+    ruta = ruta_critica(condiciones, base, col_dias)
+
+    # --- Score ------------------------------------------------------------------
     nivel = "🟢 Bajo" if score < 30 else "🟡 Medio" if score < 60 else "🔴 Alto"
-    c1, c2 = st.columns(2)
-    c1.metric("Riesgo de saneamiento", f"{score}/100", nivel)
+    criticos = ruta[ruta["critico"]]
+    dias_total = int(criticos["fin"].max())
+    por_entidad = criticos.groupby("entidad")["duracion"].sum().reindex(ENTIDADES, fill_value=0)
 
-    # Los opcionales (p. ej. parámetros urbanísticos) solo aplican si hay cambio de uso.
-    tramites = [t for t in base["tramites_generales"] if t["obligatorio"] or "cambio_uso" in marcadas]
-    df = pd.DataFrame(tramites)[["tramite", "entidad", "dias_min", "dias_max", "para_que"]]
-    extra = pd.DataFrame([base["tramites_saneamiento"][m] for m in marcadas])
-    if not extra.empty:
-        extra["para_que"] = "Saneamiento previo a la compra"
-        df = pd.concat([extra, df], ignore_index=True)
+    st.markdown("#### 📊 Resultado")
+    c1, c2, c3, c4, c5 = st.columns(5)
+    c1.metric("Score de Riesgo Burocrático", f"{score}/100", nivel, delta_color="off")
+    c2.metric("Ruta crítica hasta inscribir", f"{dias_total} días")
+    for col, ent in zip((c3, c4, c5), ENTIDADES):
+        col.metric(f"Días en {ent}", f"{int(por_entidad[ent])} días",
+                   help="Días que esta entidad aporta a la ruta crítica")
 
-    # Los trámites de saneamiento van en serie antes de la compra; el resto, en su mayoría secuenciales.
-    c2.metric("Tiempo estimado hasta inscribir", f"{df['dias_min'].sum()}–{df['dias_max'].sum()} días")
+    g1, g2 = st.columns([2, 3])
+    with g1:
+        fig_s = px.bar(desglose[desglose["Puntos"] > 0].sort_values("Puntos"), x="Puntos", y="Factor",
+                       orientation="h", text="Puntos", hover_data=["Detalle"],
+                       title="¿De dónde sale el score?")
+        fig_s.update_layout(height=360, yaxis_title="", showlegend=False)
+        st.plotly_chart(fig_s)
+    with g2:
+        # Gantt simple: barras horizontales con base = día de inicio
+        colores = {"Notaría": "#8e44ad", "SUNARP": "#2e86c1", "Municipalidad": "#d68910"}
+        fig_g = go.Figure()
+        for ent in ENTIDADES:
+            sub = ruta[ruta["entidad"] == ent]
+            if sub.empty:
+                continue
+            fig_g.add_bar(y=sub["tramite"], x=sub["duracion"].clip(lower=0.5), base=sub["inicio"],
+                          orientation="h", name=ent, marker_color=colores[ent],
+                          marker_opacity=[1.0 if c else 0.35 for c in sub["critico"]],
+                          customdata=sub[["fase_nombre", "inicio", "fin"]],
+                          hovertemplate="%{y}<br>%{customdata[0]}<br>Día %{customdata[1]} → %{customdata[2]}"
+                                        "<extra>" + ent + "</extra>")
+        fig_g.update_layout(title="Ruta crítica de trámites (barras tenues = fuera de la ruta crítica)",
+                            height=360, barmode="overlay", xaxis_title="Días desde hoy",
+                            yaxis=dict(autorange="reversed", title=""), legend=dict(orientation="h"))
+        st.plotly_chart(fig_g)
 
-    st.dataframe(df.rename(columns={"tramite": "Trámite", "entidad": "Entidad", "dias_min": "Días mín.",
-                                    "dias_max": "Días máx.", "para_que": "Para qué"}), hide_index=True)
-    st.caption(f"⚖️ {base['_aviso']}")
+    # --- Alertas ---------------------------------------------------------------
+    alertas = {
+        "fabrica_no_declarada": f"🔴 Hay {datos['pisos_construidos'] - datos['pisos_declarados']} piso(s) sin "
+                                "declaratoria de fábrica: el banco puede no financiar y la regularización va antes de firmar.",
+        "sin_independizar": "🔴 Sin independización no hay partida propia: no se puede inscribir la compra de la unidad sola.",
+        "independizacion_en_tramite": "🟡 Independización en trámite: condiciona la firma a que se inscriba.",
+        "cargas_gravamenes": "🔴 La carga debe levantarse (o pagarse con el precio en la notaría) antes de inscribir.",
+        "sucesion": "🟡 Todos los herederos deben figurar y firmar: exige sucesión inscrita.",
+        "deuda_arbitrios": "🟡 Exige la constancia de no adeudo; negocia descontar la deuda del precio.",
+        "cambio_uso": "🟡 El uso inscrito no coincide con el previsto: requiere cambio de uso municipal.",
+        "uso_comercial": "🟡 Uso comercial: verifica la zonificación y que el inquilino pueda sacar licencia de funcionamiento.",
+    }
+    if datos["antiguedad"] >= 30 and datos["independizacion"] == "No sé":
+        st.warning("🟡 Edificación de 30+ años con independización desconocida: pide la copia literal antes de ofertar.")
+    for c in condiciones:
+        if alertas[c].startswith("🔴"):
+            st.error(alertas[c])
+        else:
+            st.warning(alertas[c])
+    if not condiciones:
+        st.success("🟢 Sin condiciones de saneamiento detectadas: solo aplica la ruta estándar de compraventa.")
+
+    tabla = ruta.assign(**{"En ruta crítica": ruta["critico"].map({True: "✅", False: "—"})})[
+        ["fase_nombre", "tramite", "entidad", "inicio", "fin", "duracion", "En ruta crítica", "para_que"]
+    ].rename(columns={"fase_nombre": "Fase", "tramite": "Trámite", "entidad": "Entidad", "inicio": "Día inicio",
+                      "fin": "Día fin", "duracion": "Días", "para_que": "Para qué"})
+    st.dataframe(tabla, hide_index=True)
+    st.caption("Supuestos de la ruta crítica: en la due diligence SUNARP y la Municipalidad avanzan en paralelo; "
+               "saneamiento, cierre e inscripción son secuenciales. La licencia de funcionamiento es post-compra. "
+               f"⚖️ {base['_aviso']}")
 
 
 def main() -> None:

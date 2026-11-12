@@ -38,8 +38,8 @@
 **Qué construimos:** una app web con tres módulos que trabajan sobre el mismo inmueble (precio, m² y distrito ingresados en la barra lateral):
 
 1. **📊 Estudio de mercado:** scraping de avisos de venta por distrito, con pausas entre requests y respeto a `robots.txt`. Si el portal bloquea, usa un CSV local por distrito, así que el análisis nunca se cae. Compara tu precio/m² con la mediana del distrito.
-2. **💰 Rentabilidad financiera:** inversión total (precio + alcabala + gastos de cierre + remodelación), **Cap Rate**, NOI, cash-on-cash, **flujo de caja a 5 años** con venta al final, **TIR**, **VAN** y payback, con un veredicto: viable / con reservas / no viable.
-3. **⚖️ Alertas legales y permisos:** base local estructurada con los trámites (SUNARP, municipalidad, notaría), sus plazos estimados y los riesgos de saneamiento típicos de cada distrito. Un checklist da un puntaje de riesgo y el tiempo estimado hasta inscribir.
+2. **💰 Rentabilidad financiera (del inversionista comprador):** mide el retorno de quien **compra para alquilar 5 años y vender al año 5**. Calcula inversión total (precio + alcabala + gastos de cierre + remodelación), **Cap Rate**, NOI, cash-on-cash, **flujo de caja a 5 años**, **TIR**, **VAN** y payback, con un veredicto: viable / con reservas / no viable. Los montos se muestran en **USD y soles (PEN)** según el tipo de cambio de la barra lateral.
+3. **⚖️ Alertas legales y permisos:** base local estructurada con los trámites (SUNARP, municipalidad, notaría), sus plazos estimados y los riesgos de saneamiento típicos de cada distrito. Un **formulario de diagnóstico** (antigüedad, independización en SUNARP, uso inscrito vs. previsto, pisos construidos vs. declarados, cargas, deudas, sucesión) calcula un **Score de Riesgo Burocrático (0-100)** con su desglose por factor, y una **ruta crítica** en días con el aporte de **Notaría, SUNARP y Municipalidad** (diagrama de Gantt, escenario optimista o conservador).
 
 **Insight:** el inversionista minorista no pierde dinero por elegir mal el distrito, sino por **lo que no ve en la hoja de cálculo**: costos de transacción, vacancia, impuestos y, sobre todo, **riesgo registral**. Un inmueble "barato" respecto a la mediana suele estar barato por un problema de saneamiento. EVI.IA pone mercado, finanzas y legal en la misma pantalla para que esa conexión salte a la vista.
 
@@ -61,7 +61,7 @@
 - **Capturas del flujo principal:** _[pendiente: agregar en docs/]_
   1. `docs/captura-mercado.png`: precio/m² por distrito y tu inmueble frente al mercado
   2. `docs/captura-rentabilidad.png`: KPIs, veredicto y flujo de caja a 5 años
-  3. `docs/captura-legal.png`: checklist, puntaje de riesgo y trámites
+  3. `docs/captura-legal.png`: diagnóstico, Score de Riesgo Burocrático y ruta crítica
 
 **Arquitectura**
 ```mermaid
