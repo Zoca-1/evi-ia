@@ -1,91 +1,245 @@
-id,distrito,tipo,area_m2,dormitorios,precio_usd,alquiler_mensual_usd,antiguedad_anios,fuente,precio_m2_usd,alquiler_m2_usd
-LIN-001,Lince,Departamento,82,2,163300.0,700.0,0,respaldo_sintetico,1991.0,8.54
-LIN-002,Lince,Departamento,148,4,239400.0,1220.0,35,respaldo_sintetico,1618.0,8.24
-LIN-003,Lince,Oficina,72,0,131200.0,650.0,10,respaldo_sintetico,1822.0,9.03
-LIN-004,Lince,Departamento,97,3,180000.0,730.0,15,respaldo_sintetico,1856.0,7.53
-LIN-005,Lince,Departamento,91,3,125400.0,1120.0,15,respaldo_sintetico,1378.0,12.31
-LIN-006,Lince,Dúplex,160,4,268900.0,1430.0,15,respaldo_sintetico,1681.0,8.94
-LIN-007,Lince,Departamento,109,3,185200.0,1110.0,10,respaldo_sintetico,1699.0,10.18
-LIN-008,Lince,Departamento,142,4,229700.0,1400.0,0,respaldo_sintetico,1618.0,9.86
-LIN-009,Lince,Dúplex,147,4,208600.0,1220.0,25,respaldo_sintetico,1419.0,8.3
-LIN-010,Lince,Oficina,103,0,204900.0,760.0,25,respaldo_sintetico,1989.0,7.38
-LIN-011,Lince,Oficina,57,0,79800.0,580.0,35,respaldo_sintetico,1400.0,10.18
-LIN-012,Lince,Oficina,79,0,148000.0,720.0,2,respaldo_sintetico,1873.0,9.11
-LIN-013,Lince,Departamento,156,4,232800.0,1370.0,25,respaldo_sintetico,1492.0,8.78
-LIN-014,Lince,Dúplex,61,2,122300.0,460.0,0,respaldo_sintetico,2005.0,7.54
-LIN-015,Lince,Dúplex,123,4,203200.0,780.0,10,respaldo_sintetico,1652.0,6.34
-LIN-016,Lince,Oficina,69,0,136000.0,620.0,35,respaldo_sintetico,1971.0,8.99
-LIN-017,Lince,Dúplex,95,3,162600.0,930.0,0,respaldo_sintetico,1712.0,9.79
-LIN-018,Lince,Departamento,120,3,191000.0,1000.0,35,respaldo_sintetico,1592.0,8.33
-LIN-019,Lince,Departamento,151,4,262300.0,1550.0,35,respaldo_sintetico,1737.0,10.26
-LIN-020,Lince,Dúplex,109,3,220800.0,860.0,15,respaldo_sintetico,2026.0,7.89
-LIN-021,Lince,Dúplex,150,4,295200.0,1490.0,10,respaldo_sintetico,1968.0,9.93
-LIN-022,Lince,Dúplex,151,4,275600.0,1520.0,35,respaldo_sintetico,1825.0,10.07
-LIN-023,Lince,Departamento,120,3,226600.0,1010.0,5,respaldo_sintetico,1888.0,8.42
-LIN-024,Lince,Dúplex,62,2,112600.0,540.0,35,respaldo_sintetico,1816.0,8.71
-LIN-025,Lince,Oficina,81,0,151800.0,630.0,5,respaldo_sintetico,1874.0,7.78
-LIN-026,Lince,Departamento,59,2,115700.0,550.0,10,respaldo_sintetico,1961.0,9.32
-LIN-027,Lince,Departamento,63,2,104600.0,650.0,35,respaldo_sintetico,1660.0,10.32
-LIN-028,Lince,Departamento,108,3,179100.0,980.0,10,respaldo_sintetico,1658.0,9.07
-LIN-029,Lince,Departamento,93,3,167400.0,880.0,10,respaldo_sintetico,1800.0,9.46
-LIN-030,Lince,Oficina,70,0,127800.0,540.0,5,respaldo_sintetico,1826.0,7.71
-JES-001,Jesús María,Dúplex,47,1,106700.0,520.0,0,respaldo_sintetico,2270.0,11.06
-JES-002,Jesús María,Departamento,119,3,283300.0,1000.0,0,respaldo_sintetico,2381.0,8.4
-JES-003,Jesús María,Oficina,75,0,139700.0,630.0,0,respaldo_sintetico,1863.0,8.4
-JES-004,Jesús María,Dúplex,154,4,251400.0,1320.0,2,respaldo_sintetico,1632.0,8.57
-JES-005,Jesús María,Oficina,79,0,141300.0,780.0,5,respaldo_sintetico,1789.0,9.87
-JES-006,Jesús María,Departamento,108,3,240300.0,1060.0,2,respaldo_sintetico,2225.0,9.81
-JES-007,Jesús María,Departamento,120,3,240700.0,1120.0,5,respaldo_sintetico,2006.0,9.33
-JES-008,Jesús María,Dúplex,127,4,257000.0,1150.0,5,respaldo_sintetico,2024.0,9.06
-JES-009,Jesús María,Oficina,111,0,237100.0,1200.0,2,respaldo_sintetico,2136.0,10.81
-JES-010,Jesús María,Dúplex,76,2,119000.0,690.0,25,respaldo_sintetico,1566.0,9.08
-JES-011,Jesús María,Departamento,67,2,137300.0,710.0,25,respaldo_sintetico,2049.0,10.6
-JES-012,Jesús María,Departamento,99,3,182900.0,1060.0,0,respaldo_sintetico,1847.0,10.71
-JES-013,Jesús María,Oficina,103,0,211500.0,770.0,5,respaldo_sintetico,2053.0,7.48
-JES-014,Jesús María,Departamento,46,1,97900.0,470.0,15,respaldo_sintetico,2128.0,10.22
-JES-015,Jesús María,Dúplex,108,3,231000.0,820.0,2,respaldo_sintetico,2139.0,7.59
-JES-016,Jesús María,Departamento,85,2,177500.0,910.0,5,respaldo_sintetico,2088.0,10.71
-JES-017,Jesús María,Departamento,116,3,219000.0,1320.0,5,respaldo_sintetico,1888.0,11.38
-JES-018,Jesús María,Oficina,60,0,115300.0,660.0,0,respaldo_sintetico,1922.0,11.0
-JES-019,Jesús María,Departamento,56,2,104400.0,540.0,0,respaldo_sintetico,1864.0,9.64
-JES-020,Jesús María,Departamento,128,4,263500.0,1410.0,15,respaldo_sintetico,2059.0,11.02
-JES-021,Jesús María,Departamento,113,3,267400.0,1190.0,2,respaldo_sintetico,2366.0,10.53
-JES-022,Jesús María,Departamento,74,2,173100.0,720.0,10,respaldo_sintetico,2339.0,9.73
-JES-023,Jesús María,Dúplex,156,4,325000.0,1530.0,10,respaldo_sintetico,2083.0,9.81
-JES-024,Jesús María,Departamento,56,2,79100.0,460.0,15,respaldo_sintetico,1412.0,8.21
-JES-025,Jesús María,Departamento,135,4,233300.0,1140.0,0,respaldo_sintetico,1728.0,8.44
-JES-026,Jesús María,Dúplex,81,2,161700.0,870.0,0,respaldo_sintetico,1996.0,10.74
-JES-027,Jesús María,Departamento,144,4,254200.0,1030.0,25,respaldo_sintetico,1765.0,7.15
-JES-028,Jesús María,Departamento,154,4,270000.0,1690.0,25,respaldo_sintetico,1753.0,10.97
-JES-029,Jesús María,Departamento,77,2,138400.0,860.0,0,respaldo_sintetico,1797.0,11.17
-JES-030,Jesús María,Departamento,133,4,235900.0,1560.0,15,respaldo_sintetico,1774.0,11.73
-SAN-001,San Isidro,Departamento,109,3,297200.0,1180.0,0,respaldo_sintetico,2727.0,10.83
-SAN-002,San Isidro,Departamento,49,1,116800.0,550.0,10,respaldo_sintetico,2384.0,11.22
-SAN-003,San Isidro,Departamento,94,3,277300.0,1180.0,25,respaldo_sintetico,2950.0,12.55
-SAN-004,San Isidro,Departamento,134,4,335300.0,1270.0,2,respaldo_sintetico,2502.0,9.48
-SAN-005,San Isidro,Oficina,37,0,99200.0,360.0,25,respaldo_sintetico,2681.0,9.73
-SAN-006,San Isidro,Departamento,135,4,372200.0,1590.0,35,respaldo_sintetico,2757.0,11.78
-SAN-007,San Isidro,Dúplex,75,2,186600.0,1090.0,0,respaldo_sintetico,2488.0,14.53
-SAN-008,San Isidro,Departamento,109,3,254900.0,940.0,10,respaldo_sintetico,2339.0,8.62
-SAN-009,San Isidro,Departamento,118,3,325300.0,1210.0,0,respaldo_sintetico,2757.0,10.25
-SAN-010,San Isidro,Departamento,99,3,312600.0,1100.0,2,respaldo_sintetico,3158.0,11.11
-SAN-011,San Isidro,Dúplex,126,4,307500.0,1690.0,10,respaldo_sintetico,2440.0,13.41
-SAN-012,San Isidro,Departamento,144,4,365000.0,1810.0,35,respaldo_sintetico,2535.0,12.57
-SAN-013,San Isidro,Oficina,104,0,320100.0,1070.0,10,respaldo_sintetico,3078.0,10.29
-SAN-014,San Isidro,Departamento,63,2,156400.0,780.0,0,respaldo_sintetico,2483.0,12.38
-SAN-015,San Isidro,Departamento,139,4,412600.0,1340.0,0,respaldo_sintetico,2968.0,9.64
-SAN-016,San Isidro,Departamento,55,2,134200.0,720.0,2,respaldo_sintetico,2440.0,13.09
-SAN-017,San Isidro,Departamento,160,4,470600.0,1860.0,10,respaldo_sintetico,2941.0,11.62
-SAN-018,San Isidro,Oficina,39,0,96800.0,490.0,2,respaldo_sintetico,2482.0,12.56
-SAN-019,San Isidro,Oficina,44,0,128500.0,550.0,10,respaldo_sintetico,2920.0,12.5
-SAN-020,San Isidro,Departamento,50,1,117300.0,510.0,2,respaldo_sintetico,2346.0,10.2
-SAN-021,San Isidro,Departamento,79,2,214700.0,970.0,25,respaldo_sintetico,2718.0,12.28
-SAN-022,San Isidro,Departamento,157,4,374400.0,1500.0,35,respaldo_sintetico,2385.0,9.55
-SAN-023,San Isidro,Dúplex,86,2,242200.0,790.0,2,respaldo_sintetico,2816.0,9.19
-SAN-024,San Isidro,Oficina,38,0,102200.0,460.0,0,respaldo_sintetico,2689.0,12.11
-SAN-025,San Isidro,Departamento,104,3,316300.0,1060.0,0,respaldo_sintetico,3041.0,10.19
-SAN-026,San Isidro,Departamento,52,1,137300.0,680.0,5,respaldo_sintetico,2640.0,13.08
-SAN-027,San Isidro,Departamento,57,2,153300.0,690.0,0,respaldo_sintetico,2689.0,12.11
-SAN-028,San Isidro,Dúplex,75,2,203000.0,910.0,35,respaldo_sintetico,2707.0,12.13
-SAN-029,San Isidro,Dúplex,59,2,132000.0,660.0,35,respaldo_sintetico,2237.0,11.19
-SAN-030,San Isidro,Oficina,64,0,219500.0,840.0,35,respaldo_sintetico,3430.0,13.12
+id,operacion,distrito,tipo,tipologia,dormitorios,area_m2,precio_usd,precio_m2_usd,fuente,fecha_extraccion
+URB-151199255,venta,Lince,Departamento,1 dorm.,1.0,48.0,133800.0,2787.5,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151047495,venta,Lince,Departamento,3+ dorm.,5.0,195.0,415000.0,2128.21,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151003640,venta,Lince,Departamento,3+ dorm.,3.0,141.0,248000.0,1758.87,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151183876,venta,Lince,Departamento,3+ dorm.,3.0,82.0,149000.0,1817.07,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151216628,venta,Lince,Departamento,2 dorm.,2.0,91.0,232000.0,2549.45,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-148378163,venta,Lince,Departamento,2 dorm.,2.0,64.0,155400.0,2428.12,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151276565,venta,Lince,Departamento,2 dorm.,2.0,57.0,78000.0,1368.42,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-59135902,venta,Lince,Departamento,1 dorm.,1.0,58.0,101000.0,1741.38,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-150678460,venta,Lince,Departamento,3+ dorm.,3.0,113.0,260000.0,2300.88,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-149868772,venta,Lince,Departamento,1 dorm.,1.0,45.0,130000.0,2888.89,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151368192,venta,Lince,Departamento,3+ dorm.,3.0,84.0,144000.0,1714.29,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151059827,venta,Lince,Departamento,3+ dorm.,3.0,152.0,358000.0,2355.26,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151137940,venta,Lince,Departamento,2 dorm.,2.0,62.0,118000.0,1903.23,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-150712509,venta,Lince,Departamento,3+ dorm.,3.0,66.0,116000.0,1757.58,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-148662209,venta,Lince,Departamento,2 dorm.,2.0,88.0,118000.0,1340.91,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-150859676,venta,Lince,Departamento,2 dorm.,2.0,57.0,120000.0,2105.26,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-149829657,venta,Lince,Departamento,2 dorm.,2.0,76.0,156000.0,2052.63,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151511145,venta,Lince,Departamento,1 dorm.,1.0,21.0,61700.0,2938.1,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-147112936,venta,Lince,Departamento,3+ dorm.,3.0,66.0,121000.0,1833.33,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-147503642,venta,Lince,Departamento,3+ dorm.,3.0,90.0,105000.0,1166.67,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151442140,venta,Lince,Departamento,3+ dorm.,3.0,76.0,127000.0,1671.05,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151476829,venta,Lince,Departamento,2 dorm.,2.0,56.0,89000.0,1589.29,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151341375,venta,Lince,Departamento,1 dorm.,1.0,46.0,120000.0,2608.7,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151423623,venta,Lince,Departamento,Sin dato,,105.0,190000.0,1809.52,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151212931,venta,Lince,Departamento,3+ dorm.,3.0,107.0,135000.0,1261.68,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151025974,venta,Lince,Departamento,3+ dorm.,4.0,103.0,95000.0,922.33,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-150278980,venta,Lince,Departamento,3+ dorm.,3.0,82.0,143300.0,1747.56,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-149382925,venta,Lince,Departamento,3+ dorm.,3.0,132.0,272500.0,2064.39,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151335571,venta,Lince,Departamento,2 dorm.,2.0,90.0,128000.0,1422.22,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151067647,venta,Lince,Departamento,1 dorm.,1.0,39.0,85100.0,2182.05,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151550181,venta,Lince,Departamento,1 dorm.,1.0,38.0,101700.0,2676.32,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151584654,venta,Lince,Departamento,3+ dorm.,3.0,76.0,110200.0,1450.0,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-146720680,venta,Lince,Departamento,2 dorm.,2.0,83.0,128300.0,1545.78,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151154158,venta,Jesús María,Departamento,3+ dorm.,4.0,191.0,300000.0,1570.68,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-150048814,venta,Jesús María,Departamento,3+ dorm.,3.0,69.0,161400.0,2339.13,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151408817,venta,Jesús María,Departamento,2 dorm.,2.0,62.0,142000.0,2290.32,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151312169,venta,Jesús María,Departamento,3+ dorm.,3.0,89.0,243500.0,2735.96,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151569635,venta,Jesús María,Departamento,3+ dorm.,4.0,120.0,176000.0,1466.67,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151508908,venta,Jesús María,Departamento,2 dorm.,2.0,55.0,102900.0,1870.91,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151174977,venta,Jesús María,Departamento,3+ dorm.,3.0,76.0,145000.0,1907.89,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-150802260,venta,Jesús María,Departamento,3+ dorm.,3.0,99.0,206000.0,2080.81,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151130736,venta,Jesús María,Departamento,3+ dorm.,3.0,73.0,152000.0,2082.19,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151496420,venta,Jesús María,Departamento,3+ dorm.,3.0,82.0,158000.0,1926.83,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-149651547,venta,Jesús María,Departamento,1 dorm.,1.0,49.0,115000.0,2346.94,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151053958,venta,Jesús María,Departamento,1 dorm.,1.0,47.0,97300.0,2070.21,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151459329,venta,Jesús María,Departamento,3+ dorm.,3.0,79.0,160000.0,2025.32,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-150838994,venta,Jesús María,Departamento,2 dorm.,2.0,90.0,220000.0,2444.44,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-146909459,venta,Jesús María,Departamento,1 dorm.,1.0,61.0,140000.0,2295.08,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-147112936,venta,Jesús María,Departamento,3+ dorm.,3.0,66.0,121000.0,1833.33,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-147503642,venta,Jesús María,Departamento,3+ dorm.,3.0,90.0,105000.0,1166.67,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151442140,venta,Jesús María,Departamento,3+ dorm.,3.0,76.0,127000.0,1671.05,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151476829,venta,Jesús María,Departamento,2 dorm.,2.0,56.0,89000.0,1589.29,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151341375,venta,Jesús María,Departamento,1 dorm.,1.0,46.0,120000.0,2608.7,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151423623,venta,Jesús María,Departamento,Sin dato,,105.0,190000.0,1809.52,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151212931,venta,Jesús María,Departamento,3+ dorm.,3.0,107.0,135000.0,1261.68,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151025974,venta,Jesús María,Departamento,3+ dorm.,4.0,103.0,95000.0,922.33,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-150278980,venta,Jesús María,Departamento,3+ dorm.,3.0,82.0,143300.0,1747.56,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-149382925,venta,Jesús María,Departamento,3+ dorm.,3.0,132.0,272500.0,2064.39,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151335571,venta,Jesús María,Departamento,2 dorm.,2.0,90.0,128000.0,1422.22,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151067647,venta,Jesús María,Departamento,1 dorm.,1.0,39.0,85100.0,2182.05,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151550181,venta,Jesús María,Departamento,1 dorm.,1.0,38.0,101700.0,2676.32,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151584654,venta,Jesús María,Departamento,3+ dorm.,3.0,76.0,110200.0,1450.0,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-146720680,venta,Jesús María,Departamento,2 dorm.,2.0,83.0,128300.0,1545.78,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151597412,venta,San Isidro,Departamento,3+ dorm.,3.0,153.0,350000.0,2287.58,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151492254,venta,San Isidro,Departamento,2 dorm.,2.0,132.0,250000.0,1893.94,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-150210381,venta,San Isidro,Departamento,2 dorm.,2.0,135.0,275000.0,2037.04,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151360513,venta,San Isidro,Departamento,1 dorm.,1.0,52.0,122700.0,2359.62,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-150230356,venta,San Isidro,Departamento,2 dorm.,2.0,67.0,160000.0,2388.06,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-3765571,venta,San Isidro,Departamento,3+ dorm.,3.0,480.0,900000.0,1875.0,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151436634,venta,San Isidro,Departamento,3+ dorm.,3.0,110.0,315000.0,2863.64,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-150928517,venta,San Isidro,Departamento,3+ dorm.,3.0,135.0,297500.0,2203.7,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-147472748,venta,San Isidro,Departamento,3+ dorm.,3.0,135.0,420000.0,3111.11,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151550181,venta,San Isidro,Departamento,1 dorm.,1.0,38.0,101700.0,2676.32,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-150552914,venta,San Isidro,Departamento,1 dorm.,1.0,47.0,137500.0,2925.53,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-147112936,venta,San Isidro,Departamento,3+ dorm.,3.0,66.0,121000.0,1833.33,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-147503642,venta,San Isidro,Departamento,3+ dorm.,3.0,90.0,105000.0,1166.67,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151442140,venta,San Isidro,Departamento,3+ dorm.,3.0,76.0,127000.0,1671.05,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151476829,venta,San Isidro,Departamento,2 dorm.,2.0,56.0,89000.0,1589.29,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151341375,venta,San Isidro,Departamento,1 dorm.,1.0,46.0,120000.0,2608.7,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151423623,venta,San Isidro,Departamento,Sin dato,,105.0,190000.0,1809.52,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151212931,venta,San Isidro,Departamento,3+ dorm.,3.0,107.0,135000.0,1261.68,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151025974,venta,San Isidro,Departamento,3+ dorm.,4.0,103.0,95000.0,922.33,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-150278980,venta,San Isidro,Departamento,3+ dorm.,3.0,82.0,143300.0,1747.56,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-149382925,venta,San Isidro,Departamento,3+ dorm.,3.0,132.0,272500.0,2064.39,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151335571,venta,San Isidro,Departamento,2 dorm.,2.0,90.0,128000.0,1422.22,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151067647,venta,San Isidro,Departamento,1 dorm.,1.0,39.0,85100.0,2182.05,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151584654,venta,San Isidro,Departamento,3+ dorm.,3.0,76.0,110200.0,1450.0,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-146720680,venta,San Isidro,Departamento,2 dorm.,2.0,83.0,128300.0,1545.78,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151413316,alquiler,Lince,Departamento,2 dorm.,2.0,71.0,770.0,10.85,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151496429,alquiler,Lince,Departamento,3+ dorm.,3.0,90.0,943.0,10.48,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151588549,alquiler,Lince,Departamento,2 dorm.,2.0,55.0,693.0,12.6,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151471730,alquiler,Lince,Departamento,3+ dorm.,3.0,89.0,874.0,9.82,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151288669,alquiler,Lince,Departamento,1 dorm.,1.0,43.0,652.0,15.16,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151398940,alquiler,Lince,Departamento,2 dorm.,2.0,58.0,667.0,11.5,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-150401128,alquiler,Lince,Departamento,3+ dorm.,3.0,130.0,1200.0,9.23,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151524663,alquiler,Lince,Departamento,3+ dorm.,3.0,89.0,933.0,10.48,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151502937,alquiler,Lince,Departamento,3+ dorm.,3.0,90.0,867.0,9.63,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151215486,alquiler,Lince,Departamento,1 dorm.,1.0,45.0,549.0,12.2,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151057561,alquiler,Lince,Departamento,1 dorm.,1.0,45.0,587.0,13.04,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151603729,alquiler,Lince,Departamento,2 dorm.,2.0,45.0,700.0,15.56,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151402620,alquiler,Lince,Departamento,3+ dorm.,3.0,110.0,1088.0,9.89,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151504827,alquiler,Lince,Departamento,1 dorm.,1.0,36.0,610.0,16.94,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151312374,alquiler,Lince,Departamento,2 dorm.,2.0,88.0,760.0,8.64,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151441610,alquiler,Lince,Departamento,1 dorm.,1.0,66.0,640.0,9.7,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151516714,alquiler,Lince,Departamento,2 dorm.,2.0,56.0,667.0,11.91,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151510946,alquiler,Lince,Departamento,2 dorm.,2.0,65.0,427.0,6.57,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151597644,alquiler,Lince,Departamento,2 dorm.,2.0,46.0,675.0,14.67,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151204366,alquiler,Lince,Departamento,1 dorm.,1.0,47.0,773.0,16.45,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151534885,alquiler,Lince,Departamento,3+ dorm.,3.0,72.0,667.0,9.26,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151599436,alquiler,Lince,Departamento,2 dorm.,2.0,58.0,667.0,11.5,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151177471,alquiler,Lince,Departamento,2 dorm.,2.0,68.0,850.0,12.5,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151439080,alquiler,Lince,Departamento,1 dorm.,1.0,60.0,640.0,10.67,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151312766,alquiler,Lince,Departamento,2 dorm.,2.0,47.0,613.0,13.04,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151561848,alquiler,Lince,Departamento,2 dorm.,2.0,50.0,584.0,11.68,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-150160114,alquiler,Lince,Departamento,3+ dorm.,3.0,67.0,941.0,14.04,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151445735,alquiler,Lince,Departamento,2 dorm.,2.0,55.0,693.0,12.6,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-150021696,alquiler,Lince,Departamento,1 dorm.,1.0,60.0,680.0,11.33,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151476240,alquiler,Lince,Departamento,1 dorm.,1.0,48.0,667.0,13.9,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151430155,alquiler,Lince,Departamento,2 dorm.,2.0,47.0,480.0,10.21,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-150560493,alquiler,Lince,Departamento,1 dorm.,1.0,50.0,700.0,14.0,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151585638,alquiler,Lince,Departamento,3+ dorm.,4.0,265.0,4200.0,15.85,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151447516,alquiler,Lince,Departamento,2 dorm.,2.0,240.0,1800.0,7.5,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151527068,alquiler,Lince,Departamento,2 dorm.,2.0,110.0,1380.0,12.55,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-150048148,alquiler,Lince,Departamento,3+ dorm.,3.0,115.0,907.0,7.89,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151545954,alquiler,Lince,Departamento,3+ dorm.,3.0,68.0,530.0,7.79,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151047474,alquiler,Lince,Departamento,2 dorm.,2.0,65.0,930.0,14.31,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151134614,alquiler,Lince,Departamento,2 dorm.,2.0,75.0,667.0,8.89,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151602458,alquiler,Lince,Departamento,1 dorm.,1.0,40.0,705.0,17.62,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151461071,alquiler,Lince,Departamento,2 dorm.,2.0,64.0,1050.0,16.41,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151329777,alquiler,Lince,Departamento,3+ dorm.,3.0,156.0,2700.0,17.31,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151390774,alquiler,Lince,Departamento,Sin dato,,60.0,650.0,10.83,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151203085,alquiler,Lince,Departamento,1 dorm.,1.0,40.0,587.0,14.68,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151370297,alquiler,Lince,Departamento,1 dorm.,1.0,70.0,750.0,10.71,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-150743993,alquiler,Lince,Departamento,1 dorm.,1.0,38.0,630.0,16.58,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151324154,alquiler,Lince,Departamento,1 dorm.,1.0,52.0,453.0,8.71,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151122779,alquiler,Lince,Departamento,1 dorm.,1.0,50.0,800.0,16.0,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151511485,alquiler,Lince,Departamento,3+ dorm.,3.0,327.0,2900.0,8.87,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-147372095,alquiler,Lince,Departamento,1 dorm.,1.0,41.0,600.0,14.63,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-150982482,alquiler,Lince,Departamento,2 dorm.,2.0,80.0,1000.0,12.5,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-144623814,alquiler,Lince,Departamento,3+ dorm.,3.0,110.0,880.0,8.0,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151579201,alquiler,Lince,Departamento,2 dorm.,2.0,55.0,587.0,10.67,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-150872637,alquiler,Jesús María,Departamento,3+ dorm.,3.0,82.0,940.0,11.46,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151428318,alquiler,Jesús María,Departamento,3+ dorm.,3.0,75.0,959.0,12.79,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-150862241,alquiler,Jesús María,Departamento,2 dorm.,2.0,100.0,865.0,8.65,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151423584,alquiler,Jesús María,Departamento,2 dorm.,2.0,133.0,874.0,6.57,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151521988,alquiler,Jesús María,Departamento,3+ dorm.,3.0,89.0,773.0,8.69,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151248349,alquiler,Jesús María,Departamento,3+ dorm.,3.0,80.0,670.0,8.38,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151545961,alquiler,Jesús María,Departamento,2 dorm.,2.0,65.0,760.0,11.69,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151569618,alquiler,Jesús María,Departamento,3+ dorm.,3.0,94.0,787.0,8.37,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151311861,alquiler,Jesús María,Departamento,2 dorm.,2.0,66.0,800.0,12.12,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151311891,alquiler,Jesús María,Departamento,3+ dorm.,3.0,87.0,1000.0,11.49,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151314560,alquiler,Jesús María,Departamento,2 dorm.,2.0,61.0,812.0,13.31,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-150998585,alquiler,Jesús María,Departamento,2 dorm.,2.0,100.0,842.0,8.42,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151314148,alquiler,Jesús María,Departamento,2 dorm.,2.0,60.0,870.0,14.5,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151028955,alquiler,Jesús María,Departamento,3+ dorm.,3.0,75.0,754.0,10.05,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151472243,alquiler,Jesús María,Departamento,1 dorm.,1.0,40.0,580.0,14.5,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151515303,alquiler,Jesús María,Departamento,1 dorm.,1.0,42.0,684.0,16.29,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-4155413,alquiler,Jesús María,Departamento,3+ dorm.,3.0,90.0,880.0,9.78,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151335089,alquiler,Jesús María,Departamento,2 dorm.,2.0,70.0,910.0,13.0,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151461781,alquiler,Jesús María,Departamento,3+ dorm.,3.0,80.0,693.0,8.66,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151508536,alquiler,Jesús María,Departamento,3+ dorm.,3.0,90.0,1047.0,11.63,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151363763,alquiler,Jesús María,Departamento,2 dorm.,2.0,60.0,800.0,13.33,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151548731,alquiler,Jesús María,Departamento,1 dorm.,1.0,40.0,730.0,18.25,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-149575604,alquiler,Jesús María,Departamento,1 dorm.,1.0,50.0,760.0,15.2,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151439405,alquiler,Jesús María,Departamento,3+ dorm.,3.0,75.0,893.0,11.91,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151255354,alquiler,Jesús María,Departamento,2 dorm.,2.0,80.0,670.0,8.38,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151389298,alquiler,Jesús María,Departamento,2 dorm.,2.0,60.0,700.0,11.67,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151367360,alquiler,Jesús María,Departamento,1 dorm.,1.0,50.0,667.0,13.34,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151295075,alquiler,Jesús María,Departamento,3+ dorm.,3.0,72.0,640.0,8.89,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151450034,alquiler,Jesús María,Departamento,3+ dorm.,3.0,87.0,747.0,8.59,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-149468089,alquiler,Jesús María,Departamento,1 dorm.,1.0,42.0,533.0,12.69,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151476240,alquiler,Jesús María,Departamento,1 dorm.,1.0,48.0,667.0,13.9,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151430155,alquiler,Jesús María,Departamento,2 dorm.,2.0,47.0,480.0,10.21,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-150560493,alquiler,Jesús María,Departamento,1 dorm.,1.0,50.0,700.0,14.0,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151585638,alquiler,Jesús María,Departamento,3+ dorm.,4.0,265.0,4200.0,15.85,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151447516,alquiler,Jesús María,Departamento,2 dorm.,2.0,240.0,1800.0,7.5,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151527068,alquiler,Jesús María,Departamento,2 dorm.,2.0,110.0,1380.0,12.55,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-150048148,alquiler,Jesús María,Departamento,3+ dorm.,3.0,115.0,907.0,7.89,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151545954,alquiler,Jesús María,Departamento,3+ dorm.,3.0,68.0,530.0,7.79,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151047474,alquiler,Jesús María,Departamento,2 dorm.,2.0,65.0,930.0,14.31,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151288669,alquiler,Jesús María,Departamento,1 dorm.,1.0,43.0,652.0,15.16,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151134614,alquiler,Jesús María,Departamento,2 dorm.,2.0,75.0,667.0,8.89,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151602458,alquiler,Jesús María,Departamento,1 dorm.,1.0,40.0,705.0,17.62,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-150401128,alquiler,Jesús María,Departamento,3+ dorm.,3.0,130.0,1200.0,9.23,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151461071,alquiler,Jesús María,Departamento,2 dorm.,2.0,64.0,1050.0,16.41,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151329777,alquiler,Jesús María,Departamento,3+ dorm.,3.0,156.0,2700.0,17.31,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151390774,alquiler,Jesús María,Departamento,Sin dato,,60.0,650.0,10.83,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151203085,alquiler,Jesús María,Departamento,1 dorm.,1.0,40.0,587.0,14.68,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151370297,alquiler,Jesús María,Departamento,1 dorm.,1.0,70.0,750.0,10.71,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-150743993,alquiler,Jesús María,Departamento,1 dorm.,1.0,38.0,630.0,16.58,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151324154,alquiler,Jesús María,Departamento,1 dorm.,1.0,52.0,453.0,8.71,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151122779,alquiler,Jesús María,Departamento,1 dorm.,1.0,50.0,800.0,16.0,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151511485,alquiler,Jesús María,Departamento,3+ dorm.,3.0,327.0,2900.0,8.87,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-147372095,alquiler,Jesús María,Departamento,1 dorm.,1.0,41.0,600.0,14.63,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-150982482,alquiler,Jesús María,Departamento,2 dorm.,2.0,80.0,1000.0,12.5,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-144623814,alquiler,Jesús María,Departamento,3+ dorm.,3.0,110.0,880.0,8.0,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151579201,alquiler,Jesús María,Departamento,2 dorm.,2.0,55.0,587.0,10.67,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151103428,alquiler,San Isidro,Departamento,2 dorm.,2.0,115.0,1300.0,11.3,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151447516,alquiler,San Isidro,Departamento,2 dorm.,2.0,240.0,1800.0,7.5,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151561232,alquiler,San Isidro,Departamento,3+ dorm.,3.0,92.0,1390.0,15.11,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-147372095,alquiler,San Isidro,Departamento,1 dorm.,1.0,41.0,600.0,14.63,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151545380,alquiler,San Isidro,Departamento,2 dorm.,2.0,100.0,1800.0,18.0,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151486838,alquiler,San Isidro,Departamento,3+ dorm.,3.0,80.0,1000.0,12.5,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151482048,alquiler,San Isidro,Departamento,3+ dorm.,3.0,217.0,2800.0,12.9,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151583303,alquiler,San Isidro,Departamento,1 dorm.,1.0,45.0,640.0,14.22,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-150914704,alquiler,San Isidro,Departamento,1 dorm.,1.0,50.0,899.0,17.98,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151510454,alquiler,San Isidro,Departamento,1 dorm.,1.0,42.0,675.0,16.07,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-150318705,alquiler,San Isidro,Departamento,1 dorm.,1.0,45.0,733.0,16.29,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151207203,alquiler,San Isidro,Departamento,2 dorm.,2.0,120.0,800.0,6.67,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151511485,alquiler,San Isidro,Departamento,3+ dorm.,3.0,327.0,2900.0,8.87,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-150207331,alquiler,San Isidro,Departamento,1 dorm.,1.0,46.0,950.0,20.65,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151122779,alquiler,San Isidro,Departamento,1 dorm.,1.0,50.0,800.0,16.0,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151196489,alquiler,San Isidro,Departamento,1 dorm.,1.0,46.0,667.0,14.5,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151450433,alquiler,San Isidro,Departamento,2 dorm.,2.0,97.0,1550.0,15.98,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151551237,alquiler,San Isidro,Departamento,1 dorm.,1.0,36.0,750.0,20.83,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151529616,alquiler,San Isidro,Departamento,2 dorm.,2.0,135.0,1750.0,12.96,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-4665621,alquiler,San Isidro,Departamento,2 dorm.,2.0,65.0,900.0,13.85,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-148717489,alquiler,San Isidro,Departamento,2 dorm.,2.0,62.0,825.0,13.31,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151048160,alquiler,San Isidro,Departamento,1 dorm.,1.0,37.0,680.0,18.38,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-150560493,alquiler,San Isidro,Departamento,1 dorm.,1.0,50.0,700.0,14.0,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-150048148,alquiler,San Isidro,Departamento,3+ dorm.,3.0,115.0,907.0,7.89,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151491974,alquiler,San Isidro,Departamento,2 dorm.,2.0,58.0,835.0,14.4,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151447837,alquiler,San Isidro,Departamento,1 dorm.,1.0,50.0,600.0,12.0,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-150168894,alquiler,San Isidro,Departamento,3+ dorm.,6.0,240.0,4000.0,16.67,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151476240,alquiler,San Isidro,Departamento,1 dorm.,1.0,48.0,667.0,13.9,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151430155,alquiler,San Isidro,Departamento,2 dorm.,2.0,47.0,480.0,10.21,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151585638,alquiler,San Isidro,Departamento,3+ dorm.,4.0,265.0,4200.0,15.85,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151527068,alquiler,San Isidro,Departamento,2 dorm.,2.0,110.0,1380.0,12.55,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151545954,alquiler,San Isidro,Departamento,3+ dorm.,3.0,68.0,530.0,7.79,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151047474,alquiler,San Isidro,Departamento,2 dorm.,2.0,65.0,930.0,14.31,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151288669,alquiler,San Isidro,Departamento,1 dorm.,1.0,43.0,652.0,15.16,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151134614,alquiler,San Isidro,Departamento,2 dorm.,2.0,75.0,667.0,8.89,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151602458,alquiler,San Isidro,Departamento,1 dorm.,1.0,40.0,705.0,17.62,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-150401128,alquiler,San Isidro,Departamento,3+ dorm.,3.0,130.0,1200.0,9.23,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151461071,alquiler,San Isidro,Departamento,2 dorm.,2.0,64.0,1050.0,16.41,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151329777,alquiler,San Isidro,Departamento,3+ dorm.,3.0,156.0,2700.0,17.31,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151390774,alquiler,San Isidro,Departamento,Sin dato,,60.0,650.0,10.83,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151203085,alquiler,San Isidro,Departamento,1 dorm.,1.0,40.0,587.0,14.68,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151370297,alquiler,San Isidro,Departamento,1 dorm.,1.0,70.0,750.0,10.71,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-150743993,alquiler,San Isidro,Departamento,1 dorm.,1.0,38.0,630.0,16.58,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151324154,alquiler,San Isidro,Departamento,1 dorm.,1.0,52.0,453.0,8.71,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-150982482,alquiler,San Isidro,Departamento,2 dorm.,2.0,80.0,1000.0,12.5,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-144623814,alquiler,San Isidro,Departamento,3+ dorm.,3.0,110.0,880.0,8.0,scraping:urbania.pe (requests),2026-11-11T20:10:20
+URB-151579201,alquiler,San Isidro,Departamento,2 dorm.,2.0,55.0,587.0,10.67,scraping:urbania.pe (requests),2026-11-11T20:10:20

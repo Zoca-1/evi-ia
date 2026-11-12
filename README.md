@@ -37,7 +37,7 @@
 ## 4. Solución e insight
 **Qué construimos:** una app web con tres módulos que trabajan sobre el mismo inmueble (precio, m² y distrito ingresados en la barra lateral):
 
-1. **📊 Estudio de mercado:** scraping de avisos de venta por distrito, con pausas entre requests y respeto a `robots.txt`. Si el portal bloquea, usa un CSV local por distrito, así que el análisis nunca se cae. Compara tu precio/m² con la mediana del distrito.
+1. **📊 Estudio de mercado:** dataset local de avisos **reales de venta y alquiler** (Lince, Jesús María, San Isidro) que la app lee al instante, sin depender de la red durante el demo. Un script lo actualiza con scraping responsable y la app lo puede lanzar en segundo plano desde la barra lateral, mostrando la **fecha de la última actualización del mercado**. Compara tu precio/m² con la mediana del distrito, calcula la rentabilidad bruta (alquiler/m² ÷ precio/m²) y muestra la distribución por tipología.
 2. **💰 Rentabilidad financiera (del inversionista comprador):** mide el retorno de quien **compra para alquilar 5 años y vender al año 5**. Calcula inversión total (precio + alcabala + gastos de cierre + remodelación), **Cap Rate**, NOI, cash-on-cash, **flujo de caja a 5 años**, **TIR**, **VAN** y payback, con un veredicto: viable / con reservas / no viable. Los montos se muestran en **USD y soles (PEN)** según el tipo de cambio de la barra lateral.
 3. **⚖️ Alertas legales y permisos:** base local estructurada con los trámites (SUNARP, municipalidad, notaría), sus plazos estimados y los riesgos de saneamiento típicos de cada distrito. Un **formulario de diagnóstico** (antigüedad, independización en SUNARP, uso inscrito vs. previsto, pisos construidos vs. declarados, cargas, deudas, sucesión) calcula un **Score de Riesgo Burocrático (0-100)** con su desglose por factor, y una **ruta crítica** en días con el aporte de **Notaría, SUNARP y Municipalidad** (diagrama de Gantt, escenario optimista o conservador).
 
@@ -55,8 +55,13 @@
   python -m venv .venv
   # Windows: .venv\Scripts\activate   |   macOS/Linux: source .venv/bin/activate
   pip install -r requirements.txt
-  cp .env.example .env        # opcional: ajustar pausas / desactivar scraping
+  cp .env.example .env        # opcional
   streamlit run app/main.py
+  ```
+- **Actualizar el dataset de mercado** (≈1 min; también desde el botón 🔄 de la barra lateral):
+  ```bash
+  python scripts/actualizar_dataset_real.py              # motor requests (por defecto)
+  python scripts/actualizar_dataset_real.py --paginas 3  # más avisos (máx. 5, según robots.txt)
   ```
 - **Capturas del flujo principal:** _[pendiente: agregar en docs/]_
   1. `docs/captura-mercado.png`: precio/m² por distrito y tu inmueble frente al mercado
@@ -68,8 +73,10 @@
 flowchart LR
     U[Usuario<br/>Sidebar: precio, m², distrito] --> APP[Streamlit<br/>app/main.py]
     APP --> M1[Módulo Mercado]
-    M1 -- requests + BeautifulSoup<br/>time.sleep, robots.txt --> P[(Portal de avisos)]
-    M1 -- fallback por distrito --> CSV[(data/inmuebles_respaldo.csv)]
+    M1 -- lectura local ~2 ms --> CSV[(data/inmuebles_respaldo.csv<br/>+ mercado_metadata.json)]
+    APP -. botón 🔄 subprocess .-> S[scripts/actualizar_dataset_real.py]
+    S -- requests + BeautifulSoup<br/>robots.txt · pausas 3–6 s --> P[(Portal de avisos<br/>venta y alquiler)]
+    S -- limpieza IQR + fusión por segmento<br/>escritura atómica --> CSV
     APP --> M2[Módulo Rentabilidad<br/>Cap Rate · TIR · VAN · flujo 5 años]
     APP --> M3[Módulo Legal]
     M3 --> J[(data/legal_distritos.json<br/>trámites y riesgos)]
@@ -78,9 +85,10 @@ flowchart LR
 
 **Modelos / APIs y por qué:**
 - **Sin APIs de pago ni LLM en el MVP:** el costo marginal por usuario es casi cero y no se envían datos del inversionista a terceros.
-- **Scraping con `requests` + `BeautifulSoup`:** los avisos están en el HTML. Se usan pausas (`time.sleep`) y un User-Agent identificable, y se respeta `robots.txt`. Si el portal responde con bloqueo (p. ej. Cloudflare), **no se intenta evadirlo**: se usa el respaldo.
-- **Respaldo sintético:** `data/inmuebles_respaldo.csv` lo genera [scripts/generar_respaldo.py](scripts/generar_respaldo.py) con supuestos referenciales. No son avisos reales y la app lo indica cuando se usan.
-- **Resultados cacheados 1 hora:** la primera carga con scraping toma unos 15 s; las siguientes son instantáneas.
+- **La app no hace scraping en vivo:** lee `data/inmuebles_respaldo.csv`, que tarda unos 2 ms. Un HTTP 403 o una caída del portal no afectan el demo.
+- **Actualizador ([scripts/actualizar_dataset_real.py](scripts/actualizar_dataset_real.py)):** usa `requests` + `BeautifulSoup`, respeta `robots.txt` (incluido el formato de paginación permitido), hace pausas aleatorias de 3 a 6 s y se identifica con un User-Agent honesto. Limpia los datos (deduplicación por ID de aviso, outliers de precio/m² por 1.5×IQR) y genera `data/resumen_mercado.csv` con medianas, promedios y distribución por tipología.
+- **Scraping responsable:** si el portal responde con un desafío anti-bot (Cloudflare), **no se intenta evadirlo**. Se reintenta como máximo 2 veces y ese segmento (distrito × operación) conserva sus datos previos, así que el CSV nunca empeora. Hay un motor opcional con Selenium headless en configuración estándar (`--motor selenium`, `requirements-scraper.txt`). Hoy ese motor recibe el desafío de Cloudflare y por eso no es el motor por defecto.
+- **Base sintética inicial:** [scripts/generar_respaldo.py](scripts/generar_respaldo.py) crea el último respaldo si nunca se corrió el actualizador. La app indica qué segmentos son reales y cuáles sintéticos.
 
 ## 7. Modelo de negocio
 | Plan | Precio | Incluye |
@@ -98,14 +106,15 @@ flowchart LR
 ## 8. Herramientas del curso
 | Herramienta del curso | Uso en el producto | Archivo |
 |---|---|---|
-| **Web scraping** (requests + BeautifulSoup) | Precios de venta por distrito, con pausas y fallback | [app/main.py](app/main.py): `scrapear_distrito`, `parsear_avisos`, `obtener_mercado` |
-| **Dashboards** (Streamlit + Plotly) | App interactiva con sidebar, KPIs y gráficos | [app/main.py](app/main.py): `tab_mercado`, `tab_rentabilidad`, `tab_legal` |
+| **Web scraping** (requests + BeautifulSoup) | Avisos de venta y alquiler por distrito, con pausas, robots.txt y fusión resiliente | [scripts/actualizar_dataset_real.py](scripts/actualizar_dataset_real.py): `parsear_pagina`, `extraer_segmento`, `limpiar`, `resumir` |
+| **Dashboards** (Streamlit + Plotly) | App interactiva con sidebar, KPIs, gráficos y actualización en segundo plano | [app/main.py](app/main.py): `tab_mercado`, `tab_rentabilidad`, `tab_legal`, `sidebar_dataset` |
 | Análisis de datos con pandas | Medianas por distrito, flujo de caja, TIR/VAN | [app/main.py](app/main.py): `referencias_distrito`, `calcular_rentabilidad` |
 
 ## 9. Qué hizo el agente
 **Claude Code** (Anthropic) generó o ayudó a escribir:
 - La estructura del repo (`app/`, `data/`, `docs/research/`, `scripts/`), `requirements.txt`, `.gitignore`, `.env.example` y `LICENSE`.
-- `app/main.py` completo: scraper con `time.sleep` y fallback, modelo financiero (Cap Rate, alcabala, IR de 1.ª categoría, TIR por bisección, VAN, payback) e interfaz Streamlit.
+- `scripts/actualizar_dataset_real.py`: scraper responsable con pausas, limpieza IQR, fusión por segmento y metadata de sincronización.
+- `app/main.py` completo: lectura local del dataset con actualización en segundo plano, modelo financiero (Cap Rate, alcabala, IR de 1.ª categoría, TIR por bisección, VAN, payback) e interfaz Streamlit.
 - `scripts/generar_respaldo.py` y el CSV sintético de respaldo.
 - `data/legal_distritos.json` (base referencial de trámites y riesgos).
 - Las plantillas de entrevista y este README.
@@ -119,11 +128,15 @@ flowchart LR
 .
 ├── app/main.py                 # app Streamlit (3 módulos)
 ├── data/
-│   ├── inmuebles_respaldo.csv  # respaldo sintético del scraping
+│   ├── inmuebles_respaldo.csv  # avisos de venta y alquiler (reales o sintéticos)
+│   ├── resumen_mercado.csv     # medianas por distrito × operación × tipología
+│   ├── mercado_metadata.json   # última sincronización y estado por segmento
 │   └── legal_distritos.json    # trámites y riesgos por distrito
 ├── docs/research/              # 3 entrevistas con usuarios
-├── scripts/generar_respaldo.py # regenera el CSV de respaldo
-├── .env.example  ·  .gitignore  ·  LICENSE (MIT)  ·  requirements.txt
+├── scripts/
+│   ├── actualizar_dataset_real.py  # scraping responsable → CSV
+│   └── generar_respaldo.py         # base sintética inicial
+├── .env.example  ·  .gitignore  ·  LICENSE (MIT)  ·  requirements.txt  ·  requirements-scraper.txt
 └── README.md
 ```
 

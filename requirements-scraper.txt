@@ -1,0 +1,4 @@
+# Solo para el motor opcional del actualizador: python scripts/actualizar_dataset_real.py --motor selenium
+# (la app de Streamlit y el motor por defecto usan requirements.txt)
+-r requirements.txt
+selenium

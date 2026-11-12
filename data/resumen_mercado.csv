@@ -1,0 +1,31 @@
+distrito,operacion,tipologia,avisos,participacion_pct,mediana_precio_m2_usd,promedio_precio_usd,mediana_area_m2
+Jesús María,alquiler,Todas,56,100.0,11.68,929.38,70.0
+Jesús María,venta,Todas,30,100.0,1917.36,149006.67,77.5
+Lince,alquiler,Todas,53,100.0,11.68,904.96,60.0
+Lince,venta,Todas,33,100.0,1817.07,152878.79,76.0
+San Isidro,alquiler,Todas,47,100.0,14.0,1147.85,64.0
+San Isidro,venta,Todas,25,100.0,1893.94,207152.0,90.0
+Jesús María,alquiler,1 dorm.,16,28.57,14.66,656.12,42.5
+Jesús María,alquiler,2 dorm.,19,33.93,11.69,884.05,66.0
+Jesús María,alquiler,3+ dorm.,20,35.71,9.06,1205.0,88.0
+Jesús María,alquiler,Sin dato,1,1.79,10.83,650.0,60.0
+Jesús María,venta,1 dorm.,6,20.0,2321.01,109850.0,46.5
+Jesús María,venta,2 dorm.,6,20.0,1730.1,135033.33,72.5
+Jesús María,venta,3+ dorm.,17,56.67,1833.33,165347.06,82.0
+Jesús María,venta,Sin dato,1,3.33,1809.52,190000.0,105.0
+Lince,alquiler,1 dorm.,17,32.08,14.0,648.41,47.0
+Lince,alquiler,2 dorm.,21,39.62,11.91,793.33,58.0
+Lince,alquiler,3+ dorm.,14,26.42,9.73,1402.14,100.0
+Lince,alquiler,Sin dato,1,1.89,10.83,650.0,60.0
+Lince,venta,1 dorm.,7,21.21,2676.32,104757.14,45.0
+Lince,venta,2 dorm.,10,30.3,1746.26,132270.0,70.0
+Lince,venta,3+ dorm.,15,45.45,1757.58,186600.0,90.0
+Lince,venta,Sin dato,1,3.03,1809.52,190000.0,105.0
+San Isidro,alquiler,1 dorm.,19,40.43,15.16,691.47,45.0
+San Isidro,alquiler,2 dorm.,16,34.04,12.76,1103.38,77.5
+San Isidro,alquiler,3+ dorm.,11,23.4,12.5,2046.09,130.0
+San Isidro,alquiler,Sin dato,1,2.13,10.83,650.0,60.0
+San Isidro,venta,1 dorm.,5,20.0,2608.7,113400.0,46.0
+San Isidro,venta,2 dorm.,6,24.0,1741.62,171716.67,86.5
+San Isidro,venta,3+ dorm.,13,52.0,1833.33,260884.62,107.0
+San Isidro,venta,Sin dato,1,4.0,1809.52,190000.0,105.0

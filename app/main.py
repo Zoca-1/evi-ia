@@ -1,9 +1,13 @@
 """EVI.IA — Evaluador de Viabilidad de Inversión Inmobiliaria con IA.
 
 Módulos:
-    1. Estudio de Mercado   (scraping con pausas + respaldo CSV local)
+    1. Estudio de Mercado   (dataset local data/inmuebles_respaldo.csv, actualizable en segundo plano)
     2. Rentabilidad          (Cap Rate, inversión total, flujo de caja a 5 años)
     3. Alertas Legales       (base local de trámites y riesgos de saneamiento)
+
+La app NUNCA hace scraping en vivo: lee el CSV local (respuesta instantánea, sin riesgo
+de HTTP 403 durante el demo). El refresco lo hace scripts/actualizar_dataset_real.py,
+lanzado desde la barra lateral como proceso independiente.
 
 Ejecutar desde la raíz del repo:
     streamlit run app/main.py
@@ -12,18 +16,15 @@ from __future__ import annotations
 
 import json
 import os
-import re
-import time
+import subprocess
+import sys
+from datetime import datetime
 from pathlib import Path
-from urllib.parse import urlparse
-from urllib.robotparser import RobotFileParser
 
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-import requests
 import streamlit as st
-from bs4 import BeautifulSoup
 
 # ---------------------------------------------------------------------------
 # Configuración
@@ -31,17 +32,14 @@ from bs4 import BeautifulSoup
 ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT / "data"
 RESPALDO_CSV = DATA_DIR / "inmuebles_respaldo.csv"
+METADATA_JSON = DATA_DIR / "mercado_metadata.json"
 LEGAL_JSON = DATA_DIR / "legal_distritos.json"
+SCRIPT_ACTUALIZAR = ROOT / "scripts" / "actualizar_dataset_real.py"
+LOCK = DATA_DIR / ".actualizacion.lock"
+LOG_ACTUALIZACION = DATA_DIR / "actualizacion.log"
+LOCK_VENCE_MIN = 20  # un lock más viejo que esto se considera huérfano
 
 DISTRITOS = ["Lince", "Jesús María", "San Isidro"]
-
-# Búsquedas públicas de avisos de venta por distrito.
-FUENTES_SCRAPING = {
-    "Lince": "https://urbania.pe/buscar/venta-de-departamentos-en-lince--lima--lima",
-    "Jesús María": "https://urbania.pe/buscar/venta-de-departamentos-en-jesus-maria--lima--lima",
-    "San Isidro": "https://urbania.pe/buscar/venta-de-departamentos-en-san-isidro--lima--lima",
-}
-MIN_AVISOS_VALIDOS = 5  # menos que esto -> se usa el respaldo para ese distrito
 
 
 def _cargar_env(ruta: Path) -> None:
@@ -57,152 +55,59 @@ def _cargar_env(ruta: Path) -> None:
 
 
 _cargar_env(ROOT / ".env")
-SCRAPER_ENABLED = os.getenv("SCRAPER_ENABLED", "true").lower() == "true"
-SCRAPER_DELAY = float(os.getenv("SCRAPER_DELAY_SECONDS", "2"))
-SCRAPER_TIMEOUT = float(os.getenv("SCRAPER_TIMEOUT_SECONDS", "6"))
-SCRAPER_UA = os.getenv("SCRAPER_USER_AGENT") or "EVI.IA-research-bot/0.1 (proyecto academico)"
+PERMITIR_ACTUALIZAR = os.getenv("PERMITIR_ACTUALIZAR_DATASET", "true").lower() == "true"
 
 # ---------------------------------------------------------------------------
-# Módulo 1 — Estudio de mercado
+# Módulo 1 — Estudio de mercado (lectura local + actualización en segundo plano)
 # ---------------------------------------------------------------------------
-RE_PRECIO = re.compile(r"(?:US\$|USD|\$)\s?([\d][\d.,]{3,})", re.IGNORECASE)
-RE_SOLES = re.compile(r"S/\.?\s?([\d][\d.,]{3,})")
-RE_AREA = re.compile(r"(\d{2,4}(?:[.,]\d+)?)\s?m(?:²|2)", re.IGNORECASE)
-TIPO_CAMBIO_SCRAPING = float(os.getenv("TIPO_CAMBIO", "3.75"))  # para avisos solo en soles
-
-
-def _a_numero(texto: str) -> float:
-    """'150,000' / '150.000' / '150,000.00' -> 150000.0"""
-    texto = re.sub(r"[.,]\d{2}$", "", texto.strip())  # descarta centavos
-    return float(re.sub(r"\D", "", texto))
-
-
-def _robots_permite(url: str) -> bool:
-    """Respeta robots.txt; si no se puede leer, no se scrapea."""
-    partes = urlparse(url)
-    rp = RobotFileParser()
-    try:
-        r = requests.get(
-            f"{partes.scheme}://{partes.netloc}/robots.txt",
-            headers={"User-Agent": SCRAPER_UA},
-            timeout=SCRAPER_TIMEOUT,
-        )
-        if r.status_code >= 400:
-            return r.status_code == 404  # sin robots.txt = permitido
-        rp.parse(r.text.splitlines())
-        return rp.can_fetch(SCRAPER_UA, url)
-    except requests.RequestException:
-        return False
-
-
-def _precio_usd(texto: str) -> float | None:
-    """'S/ 489,600 · USD 144,000' -> 144000; 'S/ 435,000' -> 435000 / tipo de cambio."""
-    if m := RE_PRECIO.search(texto):
-        return _a_numero(m.group(1))
-    if m := RE_SOLES.search(texto):
-        return _a_numero(m.group(1)) / TIPO_CAMBIO_SCRAPING
-    return None
-
-
-def parsear_avisos(html: str, distrito: str, fuente: str) -> pd.DataFrame:
-    """Extrae (precio, área) de las tarjetas de aviso.
-
-    1) Selectores data-qa del portal (tarjetas 'posting PROPERTY'; se descartan los
-       proyectos en planos 'DEVELOPMENT' porque solo muestran rangos).
-    2) Si el portal cambia su HTML, heurística genérica sobre bloques de texto cortos.
-    """
-    soup = BeautifulSoup(html, "html.parser")
-    vistos: set[tuple[float, float]] = set()
-
-    tarjetas = [c for c in soup.select('[data-id][data-qa^="posting"]') if "DEVELOPMENT" not in c["data-qa"]]
-    if tarjetas:
-        candidatos = []
-        for c in tarjetas:
-            el_p = c.select_one('[data-qa="POSTING_CARD_PRICE"]')
-            el_f = c.select_one('[data-qa="POSTING_CARD_FEATURES"]')
-            if el_p and el_f:
-                candidatos.append((el_p.get_text(" ", strip=True), el_f.get_text(" ", strip=True)))
-    else:
-        candidatos = [(t, t) for t in (tag.get_text(" ", strip=True) for tag in soup.find_all(["article", "div", "li"]))
-                      if len(t) <= 400]
-
-    for txt_precio, txt_area in candidatos:
-        m_area = RE_AREA.search(txt_area)
-        try:
-            precio = _precio_usd(txt_precio)
-            area = float(m_area.group(1).replace(",", ".")) if m_area else None
-        except ValueError:
-            continue
-        if precio and area and 20 <= area <= 500 and 30_000 <= precio <= 3_000_000 and 500 <= precio / area <= 8_000:
-            vistos.add((round(precio, -2), area))
-
-    df = pd.DataFrame(sorted(vistos), columns=["precio_usd", "area_m2"])
-    if df.empty:
-        return df
-    df["distrito"] = distrito
-    df["tipo"] = "Departamento"
-    df["fuente"] = fuente
-    df["precio_m2_usd"] = (df["precio_usd"] / df["area_m2"]).round(0)
-    return df
-
-
-def scrapear_distrito(distrito: str) -> tuple[pd.DataFrame, str]:
-    url = FUENTES_SCRAPING[distrito]
-    if not _robots_permite(url):
-        return pd.DataFrame(), "robots.txt no permite o no responde"
-    time.sleep(SCRAPER_DELAY)  # pausa cortés entre robots.txt y la página
-    try:
-        r = requests.get(
-            url,
-            headers={"User-Agent": SCRAPER_UA, "Accept-Language": "es-PE,es;q=0.9"},
-            timeout=SCRAPER_TIMEOUT,
-        )
-    except requests.RequestException as e:
-        return pd.DataFrame(), f"error de red ({type(e).__name__})"
-    if r.status_code != 200:
-        return pd.DataFrame(), f"HTTP {r.status_code}"
-    df = parsear_avisos(r.text, distrito, f"scraping:{urlparse(url).netloc}")
-    if len(df) < MIN_AVISOS_VALIDOS:
-        return pd.DataFrame(), f"solo {len(df)} avisos válidos"
-    return df, f"en vivo ({len(df)} avisos)"
-
-
 @st.cache_data(show_spinner=False)
-def cargar_respaldo() -> pd.DataFrame:
-    return pd.read_csv(RESPALDO_CSV)
+def _leer_csv(ruta: str, mtime: float) -> pd.DataFrame:  # mtime en la firma = caché se invalida al cambiar el archivo
+    return pd.read_csv(ruta)
 
 
-@st.cache_data(ttl=3600, show_spinner=False)
-def obtener_mercado(intentar_scraping: bool) -> tuple[pd.DataFrame, dict[str, str]]:
-    """Scraping por distrito con fallback al CSV. Nunca lanza excepción."""
-    respaldo = cargar_respaldo()
-    partes, estados = [], {}
-    for i, distrito in enumerate(DISTRITOS):
-        df_live, estado = pd.DataFrame(), "scraping desactivado"
-        if intentar_scraping:
-            if i > 0:
-                time.sleep(SCRAPER_DELAY)  # pausa entre distritos
-            try:
-                df_live, estado = scrapear_distrito(distrito)
-            except Exception as e:  # el demo nunca debe caerse
-                df_live, estado = pd.DataFrame(), f"error inesperado ({type(e).__name__})"
-        if not df_live.empty:
-            partes.append(df_live)
-            estados[distrito] = f"🟢 {estado}"
-        else:
-            partes.append(respaldo[respaldo["distrito"] == distrito])
-            estados[distrito] = f"🟡 respaldo CSV — {estado}"
-    return pd.concat(partes, ignore_index=True), estados
+def cargar_mercado() -> pd.DataFrame:
+    return _leer_csv(str(RESPALDO_CSV), RESPALDO_CSV.stat().st_mtime)
 
 
-def referencias_distrito(mercado: pd.DataFrame, respaldo: pd.DataFrame) -> pd.DataFrame:
-    """Medianas por distrito. El alquiler/m² sale del respaldo (los avisos de venta no lo traen)."""
-    ref = mercado.groupby("distrito").agg(
+def cargar_metadata() -> dict:
+    try:
+        return json.loads(METADATA_JSON.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+
+
+def actualizacion_en_curso() -> bool:
+    if not LOCK.exists():
+        return False
+    edad_min = (datetime.now().timestamp() - LOCK.stat().st_mtime) / 60
+    return edad_min < LOCK_VENCE_MIN
+
+
+def lanzar_actualizacion() -> None:
+    """Ejecuta el script de scraping como proceso independiente (no bloquea la app)."""
+    # El lock se crea aquí (no solo en el script) para que un doble clic no lance dos procesos.
+    LOCK.write_text(json.dumps({"lanzado_por": "app", "inicio": datetime.now().isoformat(timespec="seconds")}))
+    log = open(LOG_ACTUALIZACION, "w", encoding="utf-8")
+    flags = subprocess.CREATE_NEW_PROCESS_GROUP if sys.platform == "win32" else 0
+    subprocess.Popen([sys.executable, str(SCRIPT_ACTUALIZAR)], cwd=ROOT, stdout=log,
+                     stderr=subprocess.STDOUT, creationflags=flags,
+                     env={**os.environ, "PYTHONIOENCODING": "utf-8"})
+
+
+def _fmt_fecha(iso: str | None) -> str:
+    return datetime.fromisoformat(iso).strftime("%d/%m/%Y %H:%M") if iso else "—"
+
+
+def referencias_distrito(df: pd.DataFrame) -> pd.DataFrame:
+    """Medianas por distrito: precio/m² de los avisos de venta y alquiler/m² de los de alquiler."""
+    venta, alquiler = df[df["operacion"] == "venta"], df[df["operacion"] == "alquiler"]
+    ref = venta.groupby("distrito").agg(
         avisos=("precio_usd", "size"),
         precio_m2_mediana=("precio_m2_usd", "median"),
         precio_mediana=("precio_usd", "median"),
     )
-    ref["alquiler_m2_mediana"] = respaldo.groupby("distrito")["alquiler_m2_usd"].median()
+    ref["avisos_alquiler"] = alquiler.groupby("distrito").size()
+    ref["alquiler_m2_mediana"] = alquiler.groupby("distrito")["precio_m2_usd"].median()
     ref["rentab_bruta_pct"] = ref["alquiler_m2_mediana"] * 12 / ref["precio_m2_mediana"] * 100
     return ref.reindex(DISTRITOS)
 
@@ -462,17 +367,26 @@ def sidebar(ref: pd.DataFrame) -> dict:
     }
 
 
-def tab_mercado(mercado: pd.DataFrame, estados: dict, ref: pd.DataFrame, p: dict) -> None:
+ICONO_FUENTE = {"real": "🟢", "real (anterior)": "🟢", "sintetico": "🟡"}
+
+
+def tab_mercado(mercado: pd.DataFrame, meta: dict, ref: pd.DataFrame, p: dict) -> None:
     st.subheader("📊 Estudio de mercado — Lince, Jesús María y San Isidro")
+    segs = meta.get("segmentos", {})
     cols = st.columns(len(DISTRITOS))
     for col, d in zip(cols, DISTRITOS):
         col.metric(d, f"US$ {ref.loc[d, 'precio_m2_mediana']:,.0f}/m²",
-                   help=f"Mediana precio/m² · {int(ref.loc[d, 'avisos'])} avisos")
-        col.caption(estados[d])
+                   help=f"Mediana precio/m² de venta · {int(ref.loc[d, 'avisos'])} avisos")
+        for op in ("venta", "alquiler"):
+            s = segs.get(f"{d}|{op}", {})
+            fuente = s.get("fuente", "sintetico")
+            col.caption(f"{ICONO_FUENTE.get(fuente, '⚪')} {op}: {s.get('filas', '?')} avisos · "
+                        f"{'real' if fuente.startswith('real') else 'sintético'} · {_fmt_fecha(s.get('actualizado'))}")
 
-    fig = px.box(mercado, x="distrito", y="precio_m2_usd", color="distrito", points="all",
-                 category_orders={"distrito": DISTRITOS},
-                 labels={"precio_m2_usd": "Precio por m² (USD)", "distrito": ""})
+    venta = mercado[mercado["operacion"] == "venta"]
+    fig = px.box(venta, x="distrito", y="precio_m2_usd", color="distrito", points="all",
+                 category_orders={"distrito": DISTRITOS}, hover_data=["area_m2", "precio_usd", "tipologia"],
+                 labels={"precio_m2_usd": "Precio de venta por m² (USD)", "distrito": ""})
     precio_m2_user = p["precio_usd"] / p["area_m2"]
     fig.add_hline(y=precio_m2_user, line_dash="dash",
                   annotation_text=f"Tu inmueble: US$ {precio_m2_user:,.0f}/m²")
@@ -488,16 +402,29 @@ def tab_mercado(mercado: pd.DataFrame, estados: dict, ref: pd.DataFrame, p: dict
     else:
         st.success(f"El precio/m² está en línea con el mercado de {p['distrito']} ({dif:+.0f}%).")
 
-    tabla = ref[["avisos", "precio_m2_mediana", "alquiler_m2_mediana", "rentab_bruta_pct"]].rename(columns={
-        "avisos": "Avisos", "precio_m2_mediana": "Precio/m² (USD)",
-        "alquiler_m2_mediana": "Alquiler/m²/mes (USD)", "rentab_bruta_pct": "Rentab. bruta (%)"})
+    tabla = ref[["avisos", "precio_m2_mediana", "avisos_alquiler", "alquiler_m2_mediana", "rentab_bruta_pct"]].rename(
+        columns={"avisos": "Avisos venta", "precio_m2_mediana": "Precio/m² (USD)", "avisos_alquiler": "Avisos alquiler",
+                 "alquiler_m2_mediana": "Alquiler/m²/mes (USD)", "rentab_bruta_pct": "Rentab. bruta (%)"})
     st.dataframe(tabla.style.format({"Precio/m² (USD)": "{:,.0f}", "Alquiler/m²/mes (USD)": "{:.2f}",
                                      "Rentab. bruta (%)": "{:.1f}"}))
+
+    st.markdown(f"##### Distribución por tipología — {p['distrito']}")
+    sub = mercado[mercado["distrito"] == p["distrito"]]
+    dist = (sub.groupby(["operacion", "tipologia"]).agg(avisos=("id", "size"), mediana_m2=("precio_m2_usd", "median"))
+            .reset_index())
+    dist["participacion_pct"] = dist["avisos"] / dist.groupby("operacion")["avisos"].transform("sum") * 100
+    orden_tipos = ["Monoambiente", "1 dorm.", "2 dorm.", "3+ dorm.", "Sin dato"]
+    fig_t = px.bar(dist, x="tipologia", y="participacion_pct", color="operacion", barmode="group",
+                   category_orders={"tipologia": orden_tipos}, hover_data=["avisos", "mediana_m2"],
+                   labels={"participacion_pct": "% de avisos", "tipologia": "", "operacion": "Operación"})
+    fig_t.update_layout(height=320)
+    st.plotly_chart(fig_t)
+
     with st.expander("Ver avisos del distrito seleccionado"):
-        st.dataframe(mercado[mercado["distrito"] == p["distrito"]], hide_index=True)
+        st.dataframe(sub, hide_index=True)
     if (mercado["fuente"] == "respaldo_sintetico").any():
-        st.caption("ℹ️ Los datos de respaldo son sintéticos y referenciales (ver `scripts/generar_respaldo.py`). "
-                   "El alquiler/m² siempre proviene del respaldo.")
+        st.caption("ℹ️ Algunos segmentos usan la base sintética inicial (`scripts/generar_respaldo.py`). "
+                   "Actualiza el dataset desde la barra lateral para reemplazarlos con avisos reales.")
 
 
 def tab_rentabilidad(p: dict, ref: pd.DataFrame) -> dict:
@@ -685,16 +612,44 @@ def tab_legal(p: dict) -> None:
                f"⚖️ {base['_aviso']}")
 
 
+def sidebar_dataset(meta: dict) -> None:
+    """Indicador de última actualización + botón de refresco en segundo plano."""
+    sb = st.sidebar
+    sb.markdown("**🗓️ Última actualización del mercado**")
+    real = meta.get("ultima_actualizacion_real")
+    if real:
+        sb.markdown(f"### {_fmt_fecha(real)}")
+    else:
+        sb.markdown("### Solo base sintética")
+    sb.caption(f"Última sincronización del CSV: {_fmt_fecha(meta.get('ultima_sincronizacion'))} · "
+               f"{meta.get('segmentos_reales_en_esta_corrida', 0)}/6 segmentos reales en esa corrida")
+
+    if actualizacion_en_curso():
+        sb.info("⏳ Actualización en curso (≈1–2 min). La app sigue usando el CSV actual.")
+        if sb.button("Comprobar estado"):
+            st.rerun()
+    elif PERMITIR_ACTUALIZAR:
+        if sb.button("🔄 Actualizar dataset con datos reales", help="Ejecuta scripts/actualizar_dataset_real.py "
+                     "en segundo plano. Si el portal bloquea un segmento, se conservan sus datos previos."):
+            lanzar_actualizacion()
+            st.toast("Actualización iniciada en segundo plano")
+            st.rerun()
+    if LOG_ACTUALIZACION.exists():
+        with sb.expander("Log de la última actualización"):
+            st.code(LOG_ACTUALIZACION.read_text(encoding="utf-8", errors="replace")[-3000:] or "(vacío)")
+    sb.divider()
+
+
 def main() -> None:
     st.set_page_config(page_title="EVI.IA", page_icon="🏢", layout="wide")
 
     st.sidebar.title("🏢 EVI.IA")
     st.sidebar.caption("Evaluador de Viabilidad de Inversión Inmobiliaria")
-    intentar = st.sidebar.toggle("Intentar scraping en vivo", value=SCRAPER_ENABLED,
-                                 help="Si falla, se usa data/inmuebles_respaldo.csv")
-    with st.spinner("Consultando el mercado (con pausas entre requests)..."):
-        mercado, estados = obtener_mercado(intentar)
-    ref = referencias_distrito(mercado, cargar_respaldo())
+    meta = cargar_metadata()
+    sidebar_dataset(meta)
+
+    mercado = cargar_mercado()  # lectura local cacheada: sin red, sin riesgo de 403
+    ref = referencias_distrito(mercado)
 
     p = sidebar(ref)
 
@@ -704,7 +659,7 @@ def main() -> None:
 
     t1, t2, t3 = st.tabs(["📊 Mercado", "💰 Rentabilidad", "⚖️ Legal"])
     with t1:
-        tab_mercado(mercado, estados, ref, p)
+        tab_mercado(mercado, meta, ref, p)
     with t2:
         tab_rentabilidad(p, ref)
     with t3:
