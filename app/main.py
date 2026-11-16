@@ -303,6 +303,209 @@ def ruta_critica(condiciones: list[str], base: dict, escenario: str = "dias_max"
     return df
 
 
+# --- Herramientas pre-arras (para brókeres) ------------------------------------------
+ETAPAS = ["Inmueble de Segundo Uso", "Proyecto en Planos / Entrega Reciente"]
+TIPOS_VENDEDOR = ["Persona natural (firma directamente)", "Apoderado de persona natural",
+                  "Persona jurídica / constructora"]
+
+
+def es_planos(datos: dict) -> bool:
+    return datos["etapa"] == ETAPAS[1]
+
+
+def alerta_retraso_planos(datos: dict, distrito: str, base: dict) -> tuple[str, str]:
+    """Compara los meses desde la entrega con el rango típico de retraso en independizar."""
+    pa = base["pre_arras"]
+    m_min, m_max = pa["retraso_independizacion_meses"][distrito]
+    meses = datos["meses_entrega"]
+    if datos["independizacion"] == OPCIONES_INDEP[0]:
+        return "🟢", (f"La unidad ya tiene partida independizada: el principal riesgo de los proyectos nuevos "
+                      f"(demora en independizar, típicamente {m_min}–{m_max} meses en {distrito}) ya está superado.")
+    base_txt = (f"En {distrito}, la partida independizada suele inscribirse entre **{m_min} y {m_max} meses** "
+                f"después de la entrega física (estimación referencial). {pa['nota_planos_distrito'][distrito]}")
+    if meses == 0:
+        return "🟡", (f"Proyecto aún en planos y unidad sin independizar (partida matriz). {base_txt} "
+                      "Condiciona las arras a la independización y a un cronograma con penalidades.")
+    if meses > m_max:
+        return "🔴", (f"Han pasado **{meses} meses** desde la entrega y la unidad sigue sin partida propia: "
+                      f"supera el rango típico. {base_txt} Pide a la constructora el estado de la conformidad de obra.")
+    if meses >= m_min:
+        return "🟡", f"Van **{meses} meses** desde la entrega: dentro del rango típico, pero sin partida propia aún. {base_txt}"
+    return "🟡", f"Van **{meses} meses** desde la entrega: es normal que aún no esté independizada. {base_txt}"
+
+
+def semaforo_pre_arras(datos: dict, condiciones: list[str], color_planos: str | None = None) -> tuple[str, str, list[str]]:
+    """Semáforo para decidir si el bróker recomienda firmar arras.
+
+    🔴 No firmar hasta sanear · 🟡 Firmar solo con cláusula suspensiva · 🟢 Viable.
+    color_planos: resultado de alerta_retraso_planos (solo proyectos en planos / entrega reciente).
+    """
+    rojos, amarillos = [], []
+    pisos_extra = datos["pisos_construidos"] - datos["pisos_declarados"]
+    if es_planos(datos):
+        if color_planos == "🔴":
+            rojos.append(f"Retraso en la independización por encima del rango típico ({datos['meses_entrega']} meses "
+                         "desde la entrega): exigir a la constructora el estado de la conformidad de obra antes de firmar.")
+        elif datos["independizacion"] != OPCIONES_INDEP[0]:
+            amarillos.append("Unidad aún sin partida independizada (proyecto en planos / entrega reciente).")
+        if datos["cargas_gravamenes"] != "No":
+            amarillos.append("Hipoteca matriz o carga: exigir levantamiento parcial a favor de tu unidad.")
+    else:
+        if pisos_extra > 0 and datos["ultimo_piso_aires"] == "Sí":
+            rojos.append(f"La unidad está en el último piso o incluye aires y hay {pisos_extra} piso(s) sin fábrica "
+                         "declarada: lo que compras podría no existir registralmente.")
+        elif pisos_extra > 0:
+            amarillos.append(f"El edificio tiene {pisos_extra} piso(s) sin fábrica declarada: afecta tasación y crédito.")
+        if "sin_independizar" in condiciones:
+            rojos.append("Sin independización no se puede inscribir la compra de la unidad.")
+        if datos["sucesion"] == "Sí":
+            rojos.append("Sucesión no inscrita: no está claro quiénes pueden vender y cobrar las arras.")
+        if datos["antiguedad"] >= 30 and datos["independizacion"] == "No sé":
+            amarillos.append("Edificación de 30+ años con independización desconocida.")
+    if datos["cargas_gravamenes"] == "Sí" and not es_planos(datos):
+        amarillos.append("Hipoteca/embargo: se puede firmar si el levantamiento es condición de las arras.")
+    if "independizacion_en_tramite" in condiciones:
+        amarillos.append("Independización en trámite.")
+    if datos["deuda_arbitrios"] == "Sí":
+        amarillos.append("Deuda municipal: exigir pago o descuento del precio.")
+    if "cambio_uso" in condiciones:
+        amarillos.append("Uso inscrito distinto del previsto.")
+    if datos["hipotecario"] == "Sí":
+        amarillos.append("Compra con crédito hipotecario: proteger las arras ante una tasación observada.")
+    desconocidos = [k for k in ("cargas_gravamenes", "deuda_arbitrios", "sucesion") if datos[k] == "No sé"]
+    if desconocidos:
+        amarillos.append("Hay datos sin verificar (" + ", ".join(desconocidos) + "): pide la copia literal y el CRI.")
+
+    if rojos:
+        return "🔴", "No firmar arras hasta sanear", rojos + amarillos
+    if amarillos:
+        return "🟡", "Firmar arras solo con cláusula suspensiva", amarillos
+    return "🟢", "Viable para firmar arras", ["Sin reparos detectados con la información ingresada."]
+
+
+def disparadores(datos: dict, condiciones: list[str]) -> set[str]:
+    """Etiquetas que activan documentos y condiciones de la cláusula."""
+    tags = set(condiciones) | {"siempre"}
+    tags.add("planos" if es_planos(datos) else "segundo_uso")
+    if datos["vendedor"] == TIPOS_VENDEDOR[1]:
+        tags.add("apoderado")
+    elif datos["vendedor"] == TIPOS_VENDEDOR[2]:
+        tags.add("persona_juridica")
+    if datos["ultimo_piso_aires"] == "Sí":
+        tags.add("ultimo_piso_aires")
+    if datos["hipotecario"] == "Sí":
+        tags.add("hipotecario")
+    return tags
+
+
+def documentos_pre_arras(datos: dict, condiciones: list[str], base: dict) -> list[dict]:
+    tags = disparadores(datos, condiciones)
+    return [d for d in base["pre_arras"]["documentos"] if tags & set(d["aplica"])]
+
+
+_UNIDADES = ["", "UNO", "DOS", "TRES", "CUATRO", "CINCO", "SEIS", "SIETE", "OCHO", "NUEVE", "DIEZ", "ONCE", "DOCE",
+             "TRECE", "CATORCE", "QUINCE", "DIECISÉIS", "DIECISIETE", "DIECIOCHO", "DIECINUEVE", "VEINTE",
+             "VEINTIUNO", "VEINTIDÓS", "VEINTITRÉS", "VEINTICUATRO", "VEINTICINCO", "VEINTISÉIS", "VEINTISIETE",
+             "VEINTIOCHO", "VEINTINUEVE"]
+_DECENAS = ["", "", "", "TREINTA", "CUARENTA", "CINCUENTA", "SESENTA", "SETENTA", "OCHENTA", "NOVENTA"]
+_CENTENAS = ["", "CIENTO", "DOSCIENTOS", "TRESCIENTOS", "CUATROCIENTOS", "QUINIENTOS", "SEISCIENTOS",
+             "SETECIENTOS", "OCHOCIENTOS", "NOVECIENTOS"]
+
+
+def _menor_mil(n: int) -> str:
+    if n == 100:
+        return "CIEN"
+    c, r = divmod(n, 100)
+    partes = [_CENTENAS[c]] if c else []
+    if r < 30:
+        partes.append(_UNIDADES[r])
+    else:
+        d, u = divmod(r, 10)
+        partes.append(_DECENAS[d] + (f" Y {_UNIDADES[u]}" if u else ""))
+    return " ".join(p for p in partes if p)
+
+
+def numero_a_letras(n: int) -> str:
+    """Entero a letras en español (formato notarial). 150000 -> 'CIENTO CINCUENTA MIL'."""
+    if n == 0:
+        return "CERO"
+    millones, resto = divmod(n, 1_000_000)
+    miles, unidades = divmod(resto, 1_000)
+    partes = []
+    if millones:
+        partes.append("UN MILLÓN" if millones == 1 else f"{_menor_mil(millones)} MILLONES")
+    if miles:
+        partes.append("MIL" if miles == 1 else f"{_menor_mil(miles)} MIL")
+    if unidades:
+        partes.append(_menor_mil(unidades))
+    texto = " ".join(partes)
+    for largo, corto in (("VEINTIUNO M", "VEINTIÚN M"), ("UNO M", "UN M")):  # apócope ante MIL / MILLONES
+        texto = texto.replace(largo, corto)
+    return texto
+
+
+def _monto_contrato(usd: float) -> str:
+    entero, cent = int(usd), round((usd - int(usd)) * 100)
+    return f"US$ {usd:,.2f} ({numero_a_letras(entero)} CON {cent:02d}/100 DÓLARES AMERICANOS)"
+
+
+def generar_clausula(datos: dict, condiciones: list[str], base: dict, distrito: str,
+                     precio_usd: float, arras_pct: float) -> tuple[str, list[str]]:
+    """Cláusula de condición suspensiva para el contrato de arras, autocompletada."""
+    conds_base = base["pre_arras"]["condiciones_clausula"]
+    tags = disparadores(datos, condiciones)
+    orden = ["planos", "sucesion", "fabrica_no_declarada", "sin_independizar", "independizacion_en_tramite",
+             "cargas_gravamenes", "deuda_arbitrios", "cambio_uso", "hipotecario"]
+    if "planos" in tags:  # la condición de planos ya exige entregar la unidad independizada
+        tags -= {"sin_independizar", "independizacion_en_tramite"}
+    activas = [c for c in orden if c in tags and c in conds_base]
+    arras_usd = precio_usd * arras_pct / 100
+
+    lineas = [
+        "CLÁUSULA [__]: CONDICIÓN SUSPENSIVA Y DEVOLUCIÓN DE ARRAS",
+        "",
+        f"[__].1 Las partes dejan constancia de que EL INMUEBLE materia del presente contrato se ubica en el distrito "
+        f"de {distrito}, provincia y departamento de Lima, inscrito en la Partida Electrónica N.° [__________] del "
+        f"Registro de Predios de Lima, y que el precio pactado de la compraventa asciende a {_monto_contrato(precio_usd)}.",
+        "",
+        f"[__].2 LA PARTE COMPRADORA entrega en este acto a LA PARTE VENDEDORA, en calidad de arras, la suma de "
+        f"{_monto_contrato(arras_usd)}, equivalente al {arras_pct:g} % del precio, la cual se imputará al precio "
+        "al momento de la firma de la escritura pública de compraventa.",
+        "",
+    ]
+    if activas:
+        lineas.append("[__].3 La celebración de la compraventa definitiva queda sujeta a las siguientes condiciones "
+                      "suspensivas, cuyo cumplimiento corresponde a LA PARTE VENDEDORA:")
+        for i, c in enumerate(activas, 1):
+            d = conds_base[c]
+            lineas.append(f"   {chr(96 + i)}) Que, en un plazo máximo de {d['dias_habiles']} días hábiles contados "
+                          f"desde la firma del presente documento, {d['texto']}.")
+        plazo = max(conds_base[c]["dias_habiles"] for c in activas)
+        lineas += [
+            "",
+            f"[__].4 Si cualquiera de las condiciones anteriores no se cumple dentro de su plazo (plazo máximo "
+            f"general: {plazo} días hábiles), el presente contrato quedará resuelto de pleno derecho a sola "
+            "comunicación notarial de LA PARTE COMPRADORA, y LA PARTE VENDEDORA deberá devolver el CIEN POR "
+            f"CIENTO (100 %) de las arras recibidas, esto es, {_monto_contrato(arras_usd)}, sin penalidad, "
+            "descuento ni retención alguna, dentro de los cinco (5) días hábiles siguientes a dicha comunicación.",
+            "",
+            "[__].5 El incumplimiento de las condiciones suspensivas no será considerado incumplimiento de LA PARTE "
+            "COMPRADORA ni dará lugar a la pérdida de las arras. LA PARTE COMPRADORA podrá, a su sola elección, "
+            "prorrogar por escrito cualquiera de los plazos anteriores.",
+        ]
+    else:
+        lineas += [
+            "[__].3 LA PARTE VENDEDORA declara que EL INMUEBLE se encuentra libre de cargas, gravámenes, deudas "
+            "municipales y de cualquier medida que limite su libre disposición, y que su fábrica e independización "
+            "se encuentran inscritas. De resultar falsa esta declaración antes de la firma de la escritura pública, "
+            "LA PARTE VENDEDORA devolverá el CIEN POR CIENTO (100 %) de las arras recibidas, sin penalidad, dentro de "
+            "los cinco (5) días hábiles siguientes a la comunicación notarial de LA PARTE COMPRADORA.",
+        ]
+    lineas += ["", "Nota: modelo referencial generado por EVI.IA. Debe ser revisado por un abogado o notario "
+                   "antes de su firma."]
+    return "\n".join(lineas), activas
+
+
 # ---------------------------------------------------------------------------
 # UI
 # ---------------------------------------------------------------------------
@@ -511,6 +714,13 @@ def tab_legal(p: dict) -> None:
     # --- Formulario de diagnóstico -------------------------------------------------
     st.markdown("#### 🩺 Diagnóstico de parámetros del inmueble")
     with st.form("diagnostico_legal"):
+        e1, e2, e3 = st.columns(3)
+        etapa = e1.selectbox("Etapa / tipo de venta", ETAPAS,
+                             help="Planos/entrega reciente: el riesgo está en la independización. "
+                                  "Segundo uso: en la fábrica, los aires y las deudas.")
+        vendedor = e2.selectbox("¿Quién vende y firma?", TIPOS_VENDEDOR)
+        hipotecario = e3.selectbox("¿El comprador usará crédito hipotecario?", ["No", "Sí"])
+
         f1, f2, f3 = st.columns(3)
         antiguedad = f1.number_input("Antigüedad de la edificación (años)", 0, 120, 15, 1)
         indep = f2.selectbox("Independización en SUNARP", OPCIONES_INDEP,
@@ -529,13 +739,21 @@ def tab_legal(p: dict) -> None:
         deuda = f8.selectbox("¿Deuda de predial o arbitrios?", TRIESTADO)
         sucesion = f9.selectbox("¿Vendedor heredó sin sucesión inscrita?", TRIESTADO)
 
+        g7, g8, _ = st.columns(3)
+        ultimo_piso = g7.selectbox("¿Unidad en el último piso o con aires/azotea?", ["No", "Sí"],
+                                   help="Segundo uso: si los pisos no declarados son justo los tuyos, el riesgo es máximo.")
+        meses_entrega = g8.number_input("Meses desde la entrega física (0 = aún en planos)", 0, 120, 0, 1,
+                                        help="Solo para proyectos en planos / entrega reciente.")
+
         escenario = st.radio("Escenario de plazos", ["Conservador (días máx.)", "Optimista (días mín.)"],
                              horizontal=True)
         st.form_submit_button("🔍 Diagnosticar", type="primary")
 
     datos = {"antiguedad": int(antiguedad), "independizacion": indep, "uso_inscrito": uso_ins,
              "uso_previsto": uso_prev, "pisos_construidos": int(pisos_c), "pisos_declarados": int(pisos_d),
-             "cargas_gravamenes": cargas, "deuda_arbitrios": deuda, "sucesion": sucesion}
+             "cargas_gravamenes": cargas, "deuda_arbitrios": deuda, "sucesion": sucesion,
+             "etapa": etapa, "vendedor": vendedor, "hipotecario": hipotecario,
+             "ultimo_piso_aires": ultimo_piso, "meses_entrega": int(meses_entrega)}
     score, desglose, condiciones = diagnosticar(datos, p["distrito"], base)
     col_dias = "dias_max" if escenario.startswith("Conservador") else "dias_min"
     ruta = ruta_critica(condiciones, base, col_dias)
@@ -610,6 +828,51 @@ def tab_legal(p: dict) -> None:
     st.caption("Supuestos de la ruta crítica: en la due diligence SUNARP y la Municipalidad avanzan en paralelo; "
                "saneamiento, cierre e inscripción son secuenciales. La licencia de funcionamiento es post-compra. "
                f"⚖️ {base['_aviso']}")
+
+    seccion_pre_arras(datos, condiciones, base, p)
+
+
+def seccion_pre_arras(datos: dict, condiciones: list[str], base: dict, p: dict) -> None:
+    """Herramientas accionables para el bróker antes de firmar el contrato de arras."""
+    st.divider()
+
+    # --- Semáforo Pre-Arras ------------------------------------------------------
+    st.markdown(f"#### 🚦 Semáforo Pre-Arras — {datos['etapa']}")
+    color_planos = None
+    if es_planos(datos):
+        color_planos, texto = alerta_retraso_planos(datos, p["distrito"], base)
+        caja_planos = {"🟢": st.success, "🟡": st.warning, "🔴": st.error}[color_planos]
+        caja_planos(f"{color_planos} **Partida matriz vs. independización:** {texto}")
+
+    color, veredicto, motivos = semaforo_pre_arras(datos, condiciones, color_planos)
+    caja = {"🟢": st.success, "🟡": st.warning, "🔴": st.error}[color]
+    caja(f"### {color} {veredicto}\n" + "\n".join(f"- {m}" for m in motivos))
+
+    # --- Checklist documental ----------------------------------------------------
+    st.markdown("#### ✅ Checklist documental pre-arras")
+    st.caption("Documentos que el bróker debe exigir al vendedor **antes de transferir las arras**, "
+               "según los riesgos activados en el formulario.")
+    docs = documentos_pre_arras(datos, condiciones, base)
+    recibidos = 0
+    for d in docs:
+        if st.checkbox(f"**{d['documento']}** · _{d['entidad']}_", key=f"doc_{d['id']}", help=d["motivo"]):
+            recibidos += 1
+    st.progress(recibidos / len(docs), text=f"{recibidos}/{len(docs)} documentos recibidos")
+    if recibidos == len(docs) and color != "🔴":
+        st.success("📂 Expediente completo: puedes coordinar la transferencia de las arras.")
+    elif color == "🔴":
+        st.error("⛔ Aunque el expediente esté completo, el semáforo está en rojo: primero hay que sanear.")
+    else:
+        st.info(f"Faltan {len(docs) - recibidos} documento(s). No transfieras arras hasta tenerlos.")
+
+    # --- Cláusula protectora -----------------------------------------------------
+    st.markdown("#### 📜 Cláusula Protectora para Contrato de Arras")
+    arras_pct = st.slider("Monto de arras (% del precio)", 1.0, 30.0, 10.0, 0.5, key="arras_pct")
+    clausula, activas = generar_clausula(datos, condiciones, base, p["distrito"], p["precio_usd"], arras_pct)
+    st.caption(f"Autocompletada con el distrito ({p['distrito']}), el precio de la barra lateral "
+               f"({fmt_usd(p['precio_usd'])}) y {len(activas)} reparo(s) detectado(s). Copia con el botón del bloque.")
+    st.code(clausula, language="markdown")
+    st.caption(f"⚖️ {base['pre_arras']['_aviso']}")
 
 
 def sidebar_dataset(meta: dict) -> None:

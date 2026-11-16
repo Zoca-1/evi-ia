@@ -33,3 +33,7 @@ PREGUNTAS_GUION.docx
 data/.actualizacion.lock
 data/actualizacion.log
 data/*.tmp
+
+# Temporales de Word/Office
+~$*
+~WRL*.tmp

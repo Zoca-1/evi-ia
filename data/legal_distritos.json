@@ -8,82 +8,250 @@
     "5_post_compra": "Post-compra (no bloquea la inscripción)"
   },
   "tramites_generales": [
-    {"id": "copia_literal", "tramite": "Copia literal de partida", "entidad": "SUNARP", "fase": "1_due_diligence", "dias_min": 0, "dias_max": 1,
-     "para_que": "Ver titular, área inscrita, pisos declarados, cargas y gravámenes."},
-    {"id": "cri", "tramite": "Certificado Registral Inmobiliario (CRI)", "entidad": "SUNARP", "fase": "1_due_diligence", "dias_min": 3, "dias_max": 7,
-     "para_que": "Acreditar la situación jurídica del inmueble a la fecha (exigido por notarías y bancos)."},
-    {"id": "no_adeudo", "tramite": "Constancia de no adeudo de predial y arbitrios", "entidad": "Municipalidad", "fase": "1_due_diligence", "dias_min": 1, "dias_max": 5,
-     "para_que": "Evitar heredar deudas tributarias municipales del vendedor."},
-    {"id": "minuta_escritura", "tramite": "Minuta y escritura pública de compraventa", "entidad": "Notaría", "fase": "3_cierre", "dias_min": 3, "dias_max": 10,
-     "para_que": "Formalizar la compraventa."},
-    {"id": "alcabala", "tramite": "Pago de impuesto de alcabala", "entidad": "Municipalidad", "fase": "3_cierre", "dias_min": 1, "dias_max": 3,
-     "para_que": "3 % sobre el valor que exceda 10 UIT; requisito para inscribir."},
-    {"id": "inscripcion", "tramite": "Inscripción de la compraventa", "entidad": "SUNARP", "fase": "4_inscripcion", "dias_min": 7, "dias_max": 15,
-     "para_que": "Hacer oponible la propiedad frente a terceros."}
+    {
+      "id": "copia_literal",
+      "tramite": "Copia literal de partida",
+      "entidad": "SUNARP",
+      "fase": "1_due_diligence",
+      "dias_min": 0,
+      "dias_max": 1,
+      "para_que": "Ver titular, área inscrita, pisos declarados, cargas y gravámenes."
+    },
+    {
+      "id": "cri",
+      "tramite": "Certificado Registral Inmobiliario (CRI)",
+      "entidad": "SUNARP",
+      "fase": "1_due_diligence",
+      "dias_min": 3,
+      "dias_max": 7,
+      "para_que": "Acreditar la situación jurídica del inmueble a la fecha (exigido por notarías y bancos)."
+    },
+    {
+      "id": "no_adeudo",
+      "tramite": "Constancia de no adeudo de predial y arbitrios",
+      "entidad": "Municipalidad",
+      "fase": "1_due_diligence",
+      "dias_min": 1,
+      "dias_max": 5,
+      "para_que": "Evitar heredar deudas tributarias municipales del vendedor."
+    },
+    {
+      "id": "minuta_escritura",
+      "tramite": "Minuta y escritura pública de compraventa",
+      "entidad": "Notaría",
+      "fase": "3_cierre",
+      "dias_min": 3,
+      "dias_max": 10,
+      "para_que": "Formalizar la compraventa."
+    },
+    {
+      "id": "alcabala",
+      "tramite": "Pago de impuesto de alcabala",
+      "entidad": "Municipalidad",
+      "fase": "3_cierre",
+      "dias_min": 1,
+      "dias_max": 3,
+      "para_que": "3 % sobre el valor que exceda 10 UIT; requisito para inscribir."
+    },
+    {
+      "id": "inscripcion",
+      "tramite": "Inscripción de la compraventa",
+      "entidad": "SUNARP",
+      "fase": "4_inscripcion",
+      "dias_min": 7,
+      "dias_max": 15,
+      "para_que": "Hacer oponible la propiedad frente a terceros."
+    }
   ],
   "tramites_condicionales": {
     "fabrica_no_declarada": [
-      {"tramite": "Regularización de edificación / conformidad de obra", "entidad": "Municipalidad", "fase": "2_saneamiento", "dias_min": 45, "dias_max": 120,
-       "para_que": "Hay más pisos/área construida que los declarados en SUNARP."},
-      {"tramite": "Inscripción de declaratoria de fábrica", "entidad": "SUNARP", "fase": "2_saneamiento", "dias_min": 10, "dias_max": 30,
-       "para_que": "Que el registro refleje lo realmente construido."}
+      {
+        "tramite": "Regularización de edificación / conformidad de obra",
+        "entidad": "Municipalidad",
+        "fase": "2_saneamiento",
+        "dias_min": 45,
+        "dias_max": 120,
+        "para_que": "Hay más pisos/área construida que los declarados en SUNARP."
+      },
+      {
+        "tramite": "Inscripción de declaratoria de fábrica",
+        "entidad": "SUNARP",
+        "fase": "2_saneamiento",
+        "dias_min": 10,
+        "dias_max": 30,
+        "para_que": "Que el registro refleje lo realmente construido."
+      }
     ],
     "sin_independizar": [
-      {"tramite": "Visación de planos de independización", "entidad": "Municipalidad", "fase": "2_saneamiento", "dias_min": 20, "dias_max": 60,
-       "para_que": "La unidad comparte partida con otras."},
-      {"tramite": "Reglamento interno (escritura)", "entidad": "Notaría", "fase": "2_saneamiento", "dias_min": 5, "dias_max": 20,
-       "para_que": "Definir áreas exclusivas y comunes."},
-      {"tramite": "Inscripción de independización y reglamento interno", "entidad": "SUNARP", "fase": "2_saneamiento", "dias_min": 15, "dias_max": 40,
-       "para_que": "Que la unidad tenga partida registral propia."}
+      {
+        "tramite": "Visación de planos de independización",
+        "entidad": "Municipalidad",
+        "fase": "2_saneamiento",
+        "dias_min": 20,
+        "dias_max": 60,
+        "para_que": "La unidad comparte partida con otras."
+      },
+      {
+        "tramite": "Reglamento interno (escritura)",
+        "entidad": "Notaría",
+        "fase": "2_saneamiento",
+        "dias_min": 5,
+        "dias_max": 20,
+        "para_que": "Definir áreas exclusivas y comunes."
+      },
+      {
+        "tramite": "Inscripción de independización y reglamento interno",
+        "entidad": "SUNARP",
+        "fase": "2_saneamiento",
+        "dias_min": 15,
+        "dias_max": 40,
+        "para_que": "Que la unidad tenga partida registral propia."
+      }
     ],
     "independizacion_en_tramite": [
-      {"tramite": "Seguimiento de inscripción de independización en curso", "entidad": "SUNARP", "fase": "2_saneamiento", "dias_min": 10, "dias_max": 35,
-       "para_que": "La independización está presentada pero no inscrita."}
+      {
+        "tramite": "Seguimiento de inscripción de independización en curso",
+        "entidad": "SUNARP",
+        "fase": "2_saneamiento",
+        "dias_min": 10,
+        "dias_max": 35,
+        "para_que": "La independización está presentada pero no inscrita."
+      }
     ],
     "cargas_gravamenes": [
-      {"tramite": "Escritura de levantamiento de hipoteca / embargo", "entidad": "Notaría", "fase": "2_saneamiento", "dias_min": 10, "dias_max": 45,
-       "para_que": "El vendedor debe cancelar la carga con el banco o juzgado."},
-      {"tramite": "Inscripción del levantamiento de carga", "entidad": "SUNARP", "fase": "2_saneamiento", "dias_min": 5, "dias_max": 15,
-       "para_que": "Partida libre de cargas antes de firmar."}
+      {
+        "tramite": "Escritura de levantamiento de hipoteca / embargo",
+        "entidad": "Notaría",
+        "fase": "2_saneamiento",
+        "dias_min": 10,
+        "dias_max": 45,
+        "para_que": "El vendedor debe cancelar la carga con el banco o juzgado."
+      },
+      {
+        "tramite": "Inscripción del levantamiento de carga",
+        "entidad": "SUNARP",
+        "fase": "2_saneamiento",
+        "dias_min": 5,
+        "dias_max": 15,
+        "para_que": "Partida libre de cargas antes de firmar."
+      }
     ],
     "sucesion": [
-      {"tramite": "Sucesión intestada notarial", "entidad": "Notaría", "fase": "2_saneamiento", "dias_min": 20, "dias_max": 60,
-       "para_que": "Acreditar quiénes son los herederos que venden."},
-      {"tramite": "Inscripción de la sucesión", "entidad": "SUNARP", "fase": "2_saneamiento", "dias_min": 7, "dias_max": 20,
-       "para_que": "Que todos los vendedores figuren como titulares."}
+      {
+        "tramite": "Sucesión intestada notarial",
+        "entidad": "Notaría",
+        "fase": "2_saneamiento",
+        "dias_min": 20,
+        "dias_max": 60,
+        "para_que": "Acreditar quiénes son los herederos que venden."
+      },
+      {
+        "tramite": "Inscripción de la sucesión",
+        "entidad": "SUNARP",
+        "fase": "2_saneamiento",
+        "dias_min": 7,
+        "dias_max": 20,
+        "para_que": "Que todos los vendedores figuren como titulares."
+      }
     ],
     "deuda_arbitrios": [
-      {"tramite": "Pago o fraccionamiento de deuda municipal", "entidad": "Municipalidad", "fase": "2_saneamiento", "dias_min": 1, "dias_max": 15,
-       "para_que": "Liberar la constancia de no adeudo."}
+      {
+        "tramite": "Pago o fraccionamiento de deuda municipal",
+        "entidad": "Municipalidad",
+        "fase": "2_saneamiento",
+        "dias_min": 1,
+        "dias_max": 15,
+        "para_que": "Liberar la constancia de no adeudo."
+      }
     ],
     "uso_comercial": [
-      {"tramite": "Certificado de parámetros urbanísticos y zonificación", "entidad": "Municipalidad", "fase": "1_due_diligence", "dias_min": 5, "dias_max": 10,
-       "para_que": "Confirmar que la zonificación permite el uso comercial/oficina."},
-      {"tramite": "Licencia de funcionamiento", "entidad": "Municipalidad", "fase": "5_post_compra", "dias_min": 15, "dias_max": 60,
-       "para_que": "Requisito para que el inquilino opere un negocio."}
+      {
+        "tramite": "Certificado de parámetros urbanísticos y zonificación",
+        "entidad": "Municipalidad",
+        "fase": "1_due_diligence",
+        "dias_min": 5,
+        "dias_max": 10,
+        "para_que": "Confirmar que la zonificación permite el uso comercial/oficina."
+      },
+      {
+        "tramite": "Licencia de funcionamiento",
+        "entidad": "Municipalidad",
+        "fase": "5_post_compra",
+        "dias_min": 15,
+        "dias_max": 60,
+        "para_que": "Requisito para que el inquilino opere un negocio."
+      }
     ],
     "cambio_uso": [
-      {"tramite": "Cambio de uso / regularización de uso", "entidad": "Municipalidad", "fase": "2_saneamiento", "dias_min": 30, "dias_max": 90,
-       "para_que": "El uso inscrito no coincide con el uso previsto."}
+      {
+        "tramite": "Cambio de uso / regularización de uso",
+        "entidad": "Municipalidad",
+        "fase": "2_saneamiento",
+        "dias_min": 30,
+        "dias_max": 90,
+        "para_que": "El uso inscrito no coincide con el uso previsto."
+      }
     ]
   },
   "pesos_riesgo": {
-    "antiguedad": [[10, 0], [30, 8], [50, 15], [999, 20]],
-    "independizacion": {"Independizada (partida propia)": 0, "En trámite": 12, "No independizada (partida matriz)": 25, "No sé": 15},
+    "antiguedad": [
+      [
+        10,
+        0
+      ],
+      [
+        30,
+        8
+      ],
+      [
+        50,
+        15
+      ],
+      [
+        999,
+        20
+      ]
+    ],
+    "independizacion": {
+      "Independizada (partida propia)": 0,
+      "En trámite": 12,
+      "No independizada (partida matriz)": 25,
+      "No sé": 15
+    },
     "pisos_no_declarados_base": 20,
     "pisos_no_declarados_por_piso": 5,
     "pisos_no_declarados_max": 30,
-    "uso": {"Residencial→Residencial": 0, "Comercial→Comercial": 5, "Comercial→Residencial": 10, "Residencial→Comercial": 15},
+    "uso": {
+      "Residencial→Residencial": 0,
+      "Comercial→Comercial": 5,
+      "Comercial→Residencial": 10,
+      "Residencial→Comercial": 15
+    },
     "triestado": {
-      "cargas_gravamenes": {"No": 0, "No sé": 8, "Sí": 15},
-      "deuda_arbitrios": {"No": 0, "No sé": 3, "Sí": 5},
-      "sucesion": {"No": 0, "No sé": 6, "Sí": 12}
+      "cargas_gravamenes": {
+        "No": 0,
+        "No sé": 8,
+        "Sí": 15
+      },
+      "deuda_arbitrios": {
+        "No": 0,
+        "No sé": 3,
+        "Sí": 5
+      },
+      "sucesion": {
+        "No": 0,
+        "No sé": 6,
+        "Sí": 12
+      }
     }
   },
   "distritos": {
     "Lince": {
       "municipalidad": "Municipalidad Distrital de Lince",
-      "arbitrios_predial_anual_usd": [180, 350],
+      "arbitrios_predial_anual_usd": [
+        180,
+        350
+      ],
       "nivel_riesgo_base": "Medio",
       "riesgo_base_puntos": 10,
       "recargo_uso_comercial": 0,
@@ -96,7 +264,10 @@
     },
     "Jesús María": {
       "municipalidad": "Municipalidad Distrital de Jesús María",
-      "arbitrios_predial_anual_usd": [220, 420],
+      "arbitrios_predial_anual_usd": [
+        220,
+        420
+      ],
       "nivel_riesgo_base": "Medio",
       "riesgo_base_puntos": 10,
       "recargo_uso_comercial": 3,
@@ -109,7 +280,10 @@
     },
     "San Isidro": {
       "municipalidad": "Municipalidad Distrital de San Isidro",
-      "arbitrios_predial_anual_usd": [450, 950],
+      "arbitrios_predial_anual_usd": [
+        450,
+        950
+      ],
       "nivel_riesgo_base": "Bajo",
       "riesgo_base_puntos": 5,
       "recargo_uso_comercial": 8,
@@ -119,6 +293,236 @@
         "Arbitrios más altos que el promedio: impactan el NOI."
       ],
       "recomendacion": "Si el plan incluye remodelar o alquilar como oficina, tramitar primero el certificado de parámetros urbanísticos."
+    }
+  },
+  "pre_arras": {
+    "_aviso": "Rangos y documentos referenciales elaborados por EVI.IA para orientar a brókeres; no son estadísticas oficiales. Validar con notario/abogado.",
+    "retraso_independizacion_meses": {
+      "_que_es": "Meses que suelen pasar entre la entrega física de un proyecto y la inscripción de partidas independizadas (conformidad de obra + declaratoria de fábrica + independización). Estimación referencial.",
+      "Lince": [
+        6,
+        18
+      ],
+      "Jesús María": [
+        6,
+        18
+      ],
+      "San Isidro": [
+        4,
+        12
+      ]
+    },
+    "nota_planos_distrito": {
+      "Lince": "Alta rotación de proyectos de mediana escala: verificar el avance de la conformidad de obra antes de comprometer arras.",
+      "Jesús María": "Varios proyectos recientes en ejes como Salaverry, Brasil y Cuba: confirmar que la partida matriz ya tenga la pre-declaratoria de fábrica inscrita.",
+      "San Isidro": "Proyectos con constructoras más consolidadas, pero con parámetros estrictos: confirmar que la licencia y la conformidad no tengan observaciones."
+    },
+    "documentos": [
+      {
+        "id": "copia_literal",
+        "documento": "Copia literal de la partida (vigente, máx. 30 días)",
+        "entidad": "SUNARP",
+        "motivo": "Titularidad, área, pisos declarados y cargas.",
+        "aplica": [
+          "siempre"
+        ]
+      },
+      {
+        "id": "cri",
+        "documento": "Certificado Registral Inmobiliario (CRI)",
+        "entidad": "SUNARP",
+        "motivo": "Situación jurídica certificada a la fecha.",
+        "aplica": [
+          "siempre"
+        ]
+      },
+      {
+        "id": "hr_pu",
+        "documento": "HR y PU del año vigente (autoavalúo)",
+        "entidad": "Municipalidad",
+        "motivo": "Valor de autoavalúo y titular ante la municipalidad.",
+        "aplica": [
+          "segundo_uso"
+        ]
+      },
+      {
+        "id": "no_adeudo",
+        "documento": "Constancia de no adeudo de predial y arbitrios",
+        "entidad": "Municipalidad",
+        "motivo": "Evitar heredar deudas municipales.",
+        "aplica": [
+          "segundo_uso"
+        ]
+      },
+      {
+        "id": "dni_estado_civil",
+        "documento": "DNI del/los vendedor(es) y acreditación de estado civil (partida de matrimonio o declaración)",
+        "entidad": "Vendedor / RENIEC",
+        "motivo": "Si es casado(a), el cónyuge debe intervenir en la venta.",
+        "aplica": [
+          "siempre"
+        ]
+      },
+      {
+        "id": "no_adeudo_mantenimiento",
+        "documento": "Constancia de no adeudo de mantenimiento (junta de propietarios) y recibos de luz/agua al día",
+        "entidad": "Junta / empresas de servicios",
+        "motivo": "Deudas de mantenimiento y servicios.",
+        "aplica": [
+          "segundo_uso"
+        ]
+      },
+      {
+        "id": "vigencia_poder",
+        "documento": "Vigencia de poder del representante (máx. 30 días)",
+        "entidad": "SUNARP",
+        "motivo": "Quien firma debe tener facultades para vender y cobrar arras.",
+        "aplica": [
+          "persona_juridica",
+          "apoderado"
+        ]
+      },
+      {
+        "id": "ficha_ruc_partida_empresa",
+        "documento": "Ficha RUC y partida registral de la empresa vendedora",
+        "entidad": "SUNAT / SUNARP",
+        "motivo": "Existencia y situación de la empresa.",
+        "aplica": [
+          "persona_juridica"
+        ]
+      },
+      {
+        "id": "liquidacion_hipoteca",
+        "documento": "Carta del banco con el saldo de deuda y compromiso de levantamiento de hipoteca",
+        "entidad": "Banco acreedor",
+        "motivo": "Saber cuánto del precio se destina a cancelar la carga.",
+        "aplica": [
+          "cargas_gravamenes"
+        ]
+      },
+      {
+        "id": "levantamiento_hipoteca",
+        "documento": "Escritura de levantamiento de hipoteca/embargo (o compromiso notarial)",
+        "entidad": "Notaría",
+        "motivo": "Partida libre de cargas antes de inscribir.",
+        "aplica": [
+          "cargas_gravamenes"
+        ]
+      },
+      {
+        "id": "sucesion_intestada",
+        "documento": "Testimonio de sucesión intestada o testamento inscrito + DNI de todos los herederos",
+        "entidad": "Notaría / SUNARP",
+        "motivo": "Todos los herederos deben figurar y firmar.",
+        "aplica": [
+          "sucesion"
+        ]
+      },
+      {
+        "id": "conformidad_obra",
+        "documento": "Licencia de edificación, conformidad de obra y planos aprobados",
+        "entidad": "Municipalidad",
+        "motivo": "Sustentar los pisos/área no declarados en SUNARP.",
+        "aplica": [
+          "fabrica_no_declarada",
+          "planos"
+        ]
+      },
+      {
+        "id": "reglamento_interno",
+        "documento": "Reglamento interno inscrito y título de independización (o constancia de presentación en SUNARP)",
+        "entidad": "SUNARP",
+        "motivo": "Que la unidad tenga partida propia.",
+        "aplica": [
+          "sin_independizar",
+          "independizacion_en_tramite",
+          "planos"
+        ]
+      },
+      {
+        "id": "aires_azotea",
+        "documento": "Asiento registral de los aires/azotea y acuerdo de la junta de propietarios",
+        "entidad": "SUNARP / Junta",
+        "motivo": "Confirmar que los aires o el último piso pertenecen a la unidad.",
+        "aplica": [
+          "ultimo_piso_aires"
+        ]
+      },
+      {
+        "id": "contrato_bien_futuro",
+        "documento": "Modelo de contrato de compraventa de bien futuro con cronograma de entrega e independización",
+        "entidad": "Constructora",
+        "motivo": "Plazos y penalidades por retraso.",
+        "aplica": [
+          "planos"
+        ]
+      },
+      {
+        "id": "levantamiento_parcial_promotor",
+        "documento": "Carta del banco promotor del proyecto: levantamiento parcial de hipoteca matriz",
+        "entidad": "Banco promotor",
+        "motivo": "La hipoteca del proyecto no debe quedar sobre tu unidad.",
+        "aplica": [
+          "planos"
+        ]
+      },
+      {
+        "id": "parametros_uso",
+        "documento": "Certificado de parámetros urbanísticos / compatibilidad de uso",
+        "entidad": "Municipalidad",
+        "motivo": "Confirmar que el uso comercial está permitido.",
+        "aplica": [
+          "uso_comercial",
+          "cambio_uso"
+        ]
+      },
+      {
+        "id": "preaprobacion_credito",
+        "documento": "Pre-aprobación del crédito hipotecario del comprador",
+        "entidad": "Banco del comprador",
+        "motivo": "Evitar perder arras si el banco no financia.",
+        "aplica": [
+          "hipotecario"
+        ]
+      }
+    ],
+    "condiciones_clausula": {
+      "cargas_gravamenes": {
+        "texto": "se cancele y se inscriba en SUNARP el levantamiento de toda hipoteca, embargo u otra carga o gravamen que afecte a EL INMUEBLE",
+        "dias_habiles": 45
+      },
+      "fabrica_no_declarada": {
+        "texto": "se obtenga la conformidad de obra y se inscriba en SUNARP la declaratoria de fábrica que comprenda la totalidad de lo construido en EL INMUEBLE",
+        "dias_habiles": 120
+      },
+      "sin_independizar": {
+        "texto": "se inscriba en SUNARP la independización de EL INMUEBLE con partida registral propia y su reglamento interno",
+        "dias_habiles": 90
+      },
+      "independizacion_en_tramite": {
+        "texto": "concluya la inscripción en SUNARP de la independización de EL INMUEBLE actualmente en trámite",
+        "dias_habiles": 35
+      },
+      "sucesion": {
+        "texto": "se inscriba en SUNARP la sucesión intestada o el testamento que acredite a todos los herederos como titulares de EL INMUEBLE",
+        "dias_habiles": 60
+      },
+      "deuda_arbitrios": {
+        "texto": "LA PARTE VENDEDORA acredite, mediante constancia municipal, la inexistencia de deudas de impuesto predial y arbitrios de EL INMUEBLE",
+        "dias_habiles": 15
+      },
+      "cambio_uso": {
+        "texto": "la Municipalidad emita el certificado de parámetros urbanísticos o la compatibilidad de uso que permita destinar EL INMUEBLE al uso previsto por LA PARTE COMPRADORA",
+        "dias_habiles": 30
+      },
+      "hipotecario": {
+        "texto": "la tasación de EL INMUEBLE efectuada por la entidad financiera de LA PARTE COMPRADORA no sea inferior al precio pactado ni contenga observaciones legales o técnicas, y el crédito hipotecario sea aprobado",
+        "dias_habiles": 30
+      },
+      "planos": {
+        "texto": "LA PARTE VENDEDORA entregue EL INMUEBLE con partida independizada inscrita en SUNARP y libre de la hipoteca matriz del proyecto",
+        "dias_habiles": 180
+      }
     }
   }
 }
