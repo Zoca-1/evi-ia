@@ -1,44 +1,44 @@
 {
-  "ultima_sincronizacion": "2026-11-11T20:10:20",
-  "ultima_actualizacion_real": "2026-11-11T20:10:20",
+  "ultima_sincronizacion": "2026-11-16T18:22:47",
+  "ultima_actualizacion_real": "2026-11-16T18:22:47",
   "motor": "requests",
   "segmentos_reales_en_esta_corrida": 6,
   "segmentos": {
     "Lince|venta": {
       "fuente": "real",
-      "filas": 33,
+      "filas": 29,
       "estado": "ok",
-      "actualizado": "2026-11-11T20:10:20"
+      "actualizado": "2026-11-16T18:22:47"
     },
     "Jesús María|venta": {
       "fuente": "real",
-      "filas": 30,
+      "filas": 26,
       "estado": "ok",
-      "actualizado": "2026-11-11T20:10:20"
+      "actualizado": "2026-11-16T18:22:47"
     },
     "San Isidro|venta": {
       "fuente": "real",
-      "filas": 25,
+      "filas": 24,
       "estado": "ok",
-      "actualizado": "2026-11-11T20:10:20"
+      "actualizado": "2026-11-16T18:22:47"
     },
     "Lince|alquiler": {
       "fuente": "real",
-      "filas": 53,
+      "filas": 54,
       "estado": "ok",
-      "actualizado": "2026-11-11T20:10:20"
+      "actualizado": "2026-11-16T18:22:47"
     },
     "Jesús María|alquiler": {
       "fuente": "real",
-      "filas": 56,
+      "filas": 53,
       "estado": "ok",
-      "actualizado": "2026-11-11T20:10:20"
+      "actualizado": "2026-11-16T18:22:47"
     },
     "San Isidro|alquiler": {
       "fuente": "real",
-      "filas": 47,
+      "filas": 48,
       "estado": "ok",
-      "actualizado": "2026-11-11T20:10:20"
+      "actualizado": "2026-11-16T18:22:47"
     }
   }
 }
