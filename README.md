@@ -1,7 +1,7 @@
 # EVI.IA — Evaluador de Viabilidad de Inversión Inmobiliaria con IA
 
 ## 1. One-liner
-**Ayudamos a pequeños inversionistas inmobiliarios de Lima a decidir en minutos si un departamento conviene, cruzando precios de mercado scrapeados, un modelo financiero a 5 años y alertas legales de saneamiento por distrito.**
+**EVI.IA transforma avisos inmobiliarios y datos financieros y legales en información estratégica para evaluar inversiones y anticipar riesgos antes de comprar una propiedad.**
 
 ## 2. Founder
 | | |
