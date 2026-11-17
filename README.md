@@ -72,6 +72,11 @@ Hicimos 3 entrevistas cualitativas a agentes inmobiliarios independientes, una p
 | Precio/m² por distrito y comparación del inmueble | KPIs, veredicto y flujo de caja a 5 años | Score de Riesgo Burocrático, ruta crítica en Gantt y semáforo pre-arras |
 
 **Arquitectura**
+
+![Arquitectura de EVI.IA](docs/arquitectura.png)
+
+<details><summary>Versión Mermaid (texto)</summary>
+
 ```mermaid
 flowchart LR
     U[Usuario<br/>Sidebar: precio, m², distrito] --> APP[Streamlit<br/>app/main.py]
@@ -85,6 +90,8 @@ flowchart LR
     M3 --> J[(data/legal_distritos.json<br/>trámites y riesgos)]
     M1 & M2 & M3 --> V[Plotly: gráficos y veredicto]
 ```
+
+</details>
 
 **Modelos / APIs y por qué:**
 - **Sin APIs de pago ni LLM en el MVP:** el costo marginal por usuario es casi cero y no se envían datos del inversionista a terceros.
@@ -139,6 +146,7 @@ flowchart LR
 │   ├── mercado_metadata.json   # última sincronización y estado por segmento
 │   └── legal_distritos.json    # trámites y riesgos por distrito
 ├── docs/
+│   ├── arquitectura.png        # diagrama de arquitectura
 │   ├── Foto.png                # foto del founder
 │   ├── Captura_mercado.PNG     # captura: estudio de mercado
 │   ├── Captura_rentabilidad.PNG  # captura: rentabilidad financiera
