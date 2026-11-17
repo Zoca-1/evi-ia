@@ -4,10 +4,9 @@
 **Ayudamos a pequeños inversionistas inmobiliarios de Lima a decidir en minutos si un departamento conviene, cruzando precios de mercado scrapeados, un modelo financiero a 5 años y alertas legales de saneamiento por distrito.**
 
 ## 2. Founder
-<!-- ✏️ PENDIENTE: agrega tu foto en docs/founder.jpg y completa tus datos -->
 | | |
 |---|---|
-| <img src="docs/founder.jpg" width="120" alt="Foto del founder"> | **[Tu nombre]** — Estudiante de [carrera], Universidad del Pacífico. _[Una línea sobre por qué eres la persona indicada: p. ej., experiencia en finanzas, familia que invierte en inmuebles, prácticas en una inmobiliaria o banco…]_ |
+| <img src="docs/Foto.png" width="120" alt="Albert Randall Cruz Patiño"> | **Albert Randall Cruz Patiño** — Estudiante de Economía (menciones en Finanzas y Matemática), Universidad del Pacífico. Especializado en modelamiento financiero, valuación de activos y ciencia de datos aplicada al análisis de rentabilidad y riesgo inmobiliario en Lima. |
 
 **Cómo cubro cada rol con agentes de IA**
 - **Producto:** defino el flujo a partir de las entrevistas en [docs/research/](docs/research/); Claude Code me ayuda a priorizar.
@@ -51,7 +50,7 @@ Hicimos 3 entrevistas cualitativas a agentes inmobiliarios independientes, una p
 - **Más inversionistas pequeños:** cada vez más personas buscan en el inmueble una alternativa de inversión y deciden sin asesoría profesional.
 
 ## 6. Demo
-- **URL pública:** _[pendiente: desplegar en Streamlit Community Cloud]_
+- **URL pública:** https://evi-ia-5jepleabk9543khyyufpzw.streamlit.app
 - **Cómo correrlo localmente:**
   ```bash
   python -m venv .venv
@@ -65,10 +64,12 @@ Hicimos 3 entrevistas cualitativas a agentes inmobiliarios independientes, una p
   python scripts/actualizar_dataset_real.py              # motor requests (por defecto)
   python scripts/actualizar_dataset_real.py --paginas 3  # más avisos (máx. 5, según robots.txt)
   ```
-- **Capturas del flujo principal:** _[pendiente: agregar en docs/]_
-  1. `docs/captura-mercado.png`: precio/m² por distrito y tu inmueble frente al mercado
-  2. `docs/captura-rentabilidad.png`: KPIs, veredicto y flujo de caja a 5 años
-  3. `docs/captura-legal.png`: diagnóstico, Score de Riesgo Burocrático y ruta crítica
+- **Capturas del flujo principal:**
+
+| 📊 1. Estudio de mercado | 💰 2. Rentabilidad financiera | ⚖️ 3. Diagnóstico legal |
+|:---:|:---:|:---:|
+| <img src="docs/Captura_mercado.PNG" width="300" alt="Estudio de mercado"> | <img src="docs/Captura_rentabilidad.PNG" width="300" alt="Rentabilidad financiera"> | <img src="docs/Captura_legal.PNG" width="300" alt="Diagnóstico legal"> |
+| Precio/m² por distrito y comparación del inmueble | KPIs, veredicto y flujo de caja a 5 años | Score de Riesgo Burocrático, ruta crítica en Gantt y semáforo pre-arras |
 
 **Arquitectura**
 ```mermaid
@@ -124,7 +125,7 @@ flowchart LR
 - `data/legal_distritos.json` (base referencial de trámites y riesgos).
 - Las plantillas de entrevista y este README.
 
-**Lo que hice yo:** _[completar: entrevistas reales, validación de supuestos financieros y legales, revisión del código, decisiones de producto]_
+**Autoría y desarrollo:** Albert Randall Cruz Patiño — diseño integral de producto, entrevistas cualitativas de campo en Lince, Jesús María y San Isidro, desarrollo del scraper en Python, modelamiento financiero dual (USD/PEN), lógica de diagnóstico legal pre-arras, validación de supuestos y despliegue en Streamlit Community Cloud.
 
 ---
 
@@ -137,7 +138,12 @@ flowchart LR
 │   ├── resumen_mercado.csv     # medianas por distrito × operación × tipología
 │   ├── mercado_metadata.json   # última sincronización y estado por segmento
 │   └── legal_distritos.json    # trámites y riesgos por distrito
-├── docs/research/              # 3 entrevistas a agentes + síntesis de hallazgos
+├── docs/
+│   ├── Foto.png                # foto del founder
+│   ├── Captura_mercado.PNG     # captura: estudio de mercado
+│   ├── Captura_rentabilidad.PNG  # captura: rentabilidad financiera
+│   ├── Captura_legal.PNG       # captura: diagnóstico legal
+│   └── research/               # 3 entrevistas a agentes + síntesis de hallazgos
 ├── scripts/
 │   ├── actualizar_dataset_real.py  # scraping responsable → CSV
 │   └── generar_respaldo.py         # base sintética inicial
