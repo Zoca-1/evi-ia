@@ -37,3 +37,6 @@ data/*.tmp
 # Temporales de Word/Office
 ~$*
 ~WRL*.tmp
+
+# Documento local con el link de entrega (no se publica)
+Link.docx
